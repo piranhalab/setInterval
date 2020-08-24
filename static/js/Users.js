@@ -136,7 +136,7 @@ export const Users = new Proxy({}, {
                                     !(typeof value == "number"))
                                     return false;
                                 rot[prop] = value;
-                                target.move.detail.rot = rot;
+                                target.rotate.detail.rot = rot;
                                 dispatchEvent(target.rotate);
                                 return true;
                             }
@@ -173,7 +173,7 @@ export const Users = new Proxy({}, {
                         return true;
                     }
                     target.props[prop] = value;
-                    target.change.detail.prop = prop;
+                    target.change.detail.prop = prop.toString();
                     target.change.detail.value = value;
                     dispatchEvent(target.change);
                     return true;
