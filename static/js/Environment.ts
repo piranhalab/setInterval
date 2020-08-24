@@ -15,6 +15,7 @@ function saveData(){
 }
 
 export function retrieveData(){
+	/*
 	let params:any = {}
 
 	let uuid:string|null = localStorage.getItem("uuid")
@@ -42,8 +43,8 @@ export function retrieveData(){
 
 	let url = new URL(window.location.href);
 
-	let nickname:string = url.searchParams.get("nickname");
+	nickname:string = url.searchParams.get("nickname");
 	let avatar:string = url.searchParams.get("avatar");
-	
+	 */
 	return {nickname:"luis", uuid:""}
 }

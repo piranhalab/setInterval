@@ -29,6 +29,55 @@ function checkRot(uuid, rot){
         return true
 }
 
+
+
+
+
+interface addEvent extends CustomEvent{
+	detail: { uuid: string } 
+}
+
+interface removeEvent extends CustomEvent{
+	detail: { 
+		uuid: string
+		nickname: string
+		pos: {x:number, y:number, z:number}
+		rot: {x:number, y:number, z:number}
+		room: string
+	} 
+}
+
+interface renameEvent extends CustomEvent{
+	detail: { 
+		uuid: string
+		oldName: string
+	} 
+}
+
+interface moveEvent extends CustomEvent{
+	detail: { 
+		uuid: string
+		pos: {x:number, y:number, z:number}
+	} 
+}
+
+interface rotateEvent extends CustomEvent{
+	detail: { 
+		uuid: string
+		rot: {x:number, y:number, z:number}
+	} 
+}
+
+
+interface changeEvent extends CustomEvent{
+	detail: { 
+		uuid: string
+		prop: string
+		value: any
+	} 
+}
+
+
 export interface User {
 	uuid: string
 	nickname: string
@@ -39,12 +88,12 @@ export interface User {
 		avatar: any
 		pass:number
 	}
-	add: CustomEvent
-	leave: CustomEvent
-	rename: CustomEvent
-	move: CustomEvent
-	rotate: CustomEvent
-	change: CustomEvent
+	add: addEvent
+	leave: removeEvent
+	rename: renameEvent
+	move: moveEvent
+	rotate: rotateEvent
+	change: changeEvent
 }
 
 declare global {
@@ -184,7 +233,7 @@ export const Users= new Proxy({},{
 									!(typeof value == "number")
 								) return false
 								rot[prop] = value
-								target.move.detail.rot = rot
+								target.rotate.detail.rot = rot
 								dispatchEvent(target.rotate)
 								return true
 							}
@@ -221,8 +270,8 @@ export const Users= new Proxy({},{
 					}
 
 					target.props[prop] = value
-
-					target.change.detail.prop = prop
+					
+					target.change.detail.prop = prop.toString()
 					target.change.detail.value = value
 
 					dispatchEvent(target.change)
