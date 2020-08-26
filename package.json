@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+	  "build": "tsc && tsc static/ts/main.ts --outDir  static/dist  --target es6 && npx webpack",
+	  "start": "nodemon dist/Server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
