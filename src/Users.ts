@@ -55,7 +55,5 @@ export class User implements User{
 	}
 }
 
-export const Users:User[] = [
-
-]
+export const Users:any = {}
 

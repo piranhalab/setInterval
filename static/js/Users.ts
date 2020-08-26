@@ -96,6 +96,10 @@ export interface User {
 	change: changeEvent
 }
 
+export interface Users{
+	[key: string]: User
+}
+
 declare global {
     interface Window { Users: any; }
 }
@@ -103,7 +107,7 @@ declare global {
 export class User implements User{
 	constructor(
 		{uuid="", nickname ="", pos={}, rot={}, room} : 
-		{uuid?:string, nickname?: string, pos:any, rot:any, room:string}  ){
+		{uuid?:string, nickname?: string, pos?:any, rot?:any, room?:string}  ){
 
 		if(
 			!pos.hasOwnProperty('x') || !(typeof pos.x === 'number') ||
@@ -184,8 +188,9 @@ export class User implements User{
 }
 
 
-export const Users= new Proxy({},{
+export const Users:Users = new Proxy({},{
 	get: function(target:any, uuid:string){
+		if(uuid == "me" && !target.hasOwnProperty("me")) return new User({})
 		return target[uuid]
 	},
 	set: function(target:any, uuid:string, user:User):boolean{
@@ -287,8 +292,13 @@ export const Users= new Proxy({},{
 	},
 	has: function(target, prop){
 		return target.hasOwnProperty(prop)
+	},
+	deleteProperty: function(target, user){
+		if(user in target){
+			delete target[user]
+		}
+		return true
 	}
-
 })
 
 window.Users = Users

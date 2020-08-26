@@ -1,16 +1,18 @@
 import { User, Users } from "./Users.js"
 import { Environment, retrieveData } from "./Environment.js"
+import {check, checkName, checkPos, checkRot, checkProp, checkChat} from "./Validation.js"
 
 declare global {
     interface Window { Server: any; }
 }
-
+	
 export interface Server{
 	init: Function
+	reconnect: boolean
 	disconnect: Function
 	socket: any
 }
-
+	/*
 function check(data:any[]):boolean|any{
 	if(!data) return false
 	if(
@@ -143,9 +145,27 @@ function checkProp(data){
 }
 
 
+function checkChat(data){
+        if(
+                !(Array.isArray(data) && data.length==2) ||
+                !(typeof data[0] === "string" && data[0].length == 13) ||
+                !(typeof data[1] === "string") 
+        ) return false
 
+        let uuid = data[0]
+	let msg = data[1]
+
+	if(uuid == Users.me.uuid) return false
+	if(msg.length>200) return false
+	return {
+		uuid: uuid,
+		msg: msg
+	}
+}
+*/
 export const Server: Server ={
 	socket: null,
+	reconnect:true,
 	init: function(){
 		let {nickname, uuid} = retrieveData()
 		let pos = Environment.initialPos
@@ -190,6 +210,7 @@ export const Server: Server ={
 			})
 
 			socket.on("leave",function(uuid){
+				if(Users.me.uuid == uuid) return
 				dispatchEvent(Users[uuid].leave)
 				delete Users[uuid]
 			})	
@@ -224,7 +245,7 @@ export const Server: Server ={
 
 				let {uuid, rot} = res
 
-				Users[uuid].move.detail.rot = rot
+				Users[uuid].rotate.detail.rot = rot
 				Users[uuid].rot = rot
 
 				dispatchEvent(Users[uuid].rotate)
@@ -242,6 +263,28 @@ export const Server: Server ={
 				Users[uuid].props[prop] = value
 				dispatchEvent(Users[uuid].change)
 			})	
+
+			socket.on("chat",function(data){
+				console.debug("CHAT",data)
+                                let res = checkChat(data)
+				console.debug("CHAT", res)
+                                if(!res) return
+
+				let {uuid, msg} = res
+
+				let chatEvent = new CustomEvent("chat",{
+					detail:{
+						uuid: uuid,
+						msg: msg
+					}
+				})
+
+                                dispatchEvent(chatEvent)
+                        })
+
+			socket.on('disconnect', function() {
+				Server.socket.socket.reconnect();
+			})
 		})
 	},
 	disconnect: function(){
@@ -255,7 +298,7 @@ window.addEventListener("renameUser", function(event:CustomEvent){
         const uuid = event.detail.uuid
 	let oldName = event.detail.oldName
 	if(uuid == "me" && Server.socket){
-		Server.socket.emit("rename",[Users[uuid].uuid, Users[uuid].nickname])
+		Server.socket.emit("rename",Users[uuid].nickname)
 	}
 })
 
@@ -263,7 +306,7 @@ window.addEventListener("moveUser", function(event:CustomEvent){
         const uuid = event.detail.uuid
 	let pos = event.detail.pos
 	if(uuid == "me" && Server.socket){
-		Server.socket.emit("move",[Users[uuid].uuid, pos.x, pos.y, pos.z])
+		Server.socket.emit("move",[pos.x, pos.y, pos.z])
 	}
 })
 
@@ -271,7 +314,7 @@ window.addEventListener("rotateUser", function(event:CustomEvent){
         const uuid = event.detail.uuid
 	let rot = event.detail.rot
 	if(uuid == "me" && Server.socket){
-		Server.socket.emit("rotate",[Users[uuid].uuid, rot.x, rot.y, rot.z])
+		Server.socket.emit("rotate",[rot.x, rot.y, rot.z])
 	}
 })
 
@@ -281,6 +324,15 @@ window.addEventListener("changeUser", function(event:CustomEvent){
 	let value = event.detail.value
 
 	if(uuid == "me" && Server.socket){
-		Server.socket.emit("change",[Users[uuid].uuid, prop,value])
+		Server.socket.emit("change",[prop,value])
+	}
+})
+
+window.addEventListener("chat", function(event:CustomEvent){
+        const uuid = event.detail.uuid
+	let msg = event.detail.msg
+	console.debug("asfsdf","eventochat")
+	if(uuid == "me" && Server.socket){
+		Server.socket.emit("chat",msg)
 	}
 })

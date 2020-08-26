@@ -93,6 +93,8 @@ export class User {
 }
 export const Users = new Proxy({}, {
     get: function (target, uuid) {
+        if (uuid == "me" && !target.hasOwnProperty("me"))
+            return new User({});
         return target[uuid];
     },
     set: function (target, uuid, user) {
@@ -187,6 +189,12 @@ export const Users = new Proxy({}, {
     },
     has: function (target, prop) {
         return target.hasOwnProperty(prop);
+    },
+    deleteProperty: function (target, user) {
+        if (user in target) {
+            delete target[user];
+        }
+        return true;
     }
 });
 window.Users = Users;

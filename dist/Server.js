@@ -25,7 +25,7 @@ function check(query) {
     catch (e) {
         return false;
     }
-    if (!(typeof nickname === "string") ||
+    if (!(typeof nickname === "string" && nickname.length > 0 && nickname.length < 30) ||
         !(typeof room === "string") ||
         !(typeof uuid === "string") ||
         !(uuid.length == 13))
@@ -40,74 +40,65 @@ function check(query) {
         return false;
     return { room: room, rot: rot, pos: pos, nickname: nickname, uuid: uuid };
 }
-function checkName(data) {
-    if (!(Array.isArray(data) && data.length == 2) ||
-        !(typeof data[0] === "string" && data[0].length == 13) ||
-        !(typeof data[1] === "string"))
+function checkName(uuid, data) {
+    if (!(typeof data === "string" && data.length > 0 && data.length < 30))
         return false;
-    let uuid = data[0];
-    let nickname = data[1];
+    let nickname = data;
     if (nickname == Users_1.Users[uuid].nickname)
         return false;
-    return { nickname: nickname, uuid: uuid };
+    return { nickname: nickname };
 }
-function checkPos(data) {
-    if (!(Array.isArray(data) && data.length == 4) ||
-        !(typeof data[0] === "string" && data[0].length == 13) ||
+function checkPos(uuid, data) {
+    if (!(Array.isArray(data) && data.length == 3) ||
+        !(typeof data[0] === "number") ||
         !(typeof data[1] === "number") ||
-        !(typeof data[2] === "number") ||
-        !(typeof data[3] === "number"))
+        !(typeof data[2] === "number"))
         return false;
-    let uuid = data[0];
     let pos = {
-        x: data[1],
-        y: data[2],
-        z: data[3],
+        x: data[0],
+        y: data[1],
+        z: data[2],
     };
     if (pos == Users_1.Users[uuid].pos)
         return false;
-    return {
-        uuid: uuid,
-        pos: pos
-    };
+    return { pos: pos };
 }
-function checkRot(data) {
-    if (!(Array.isArray(data) && data.length == 4) ||
-        !(typeof data[0] === "string" && data[0].length == 13) ||
+function checkRot(uuid, data) {
+    if (!(Array.isArray(data) && data.length == 3) ||
+        !(typeof data[0] === "number") ||
         !(typeof data[1] === "number") ||
-        !(typeof data[2] === "number") ||
-        !(typeof data[3] === "number"))
+        !(typeof data[2] === "number"))
         return false;
-    let uuid = data[0];
     let rot = {
-        x: data[1],
-        y: data[2],
-        z: data[3],
+        x: data[0],
+        y: data[1],
+        z: data[2],
     };
     if (rot == Users_1.Users[uuid].rot)
         return false;
-    return {
-        uuid: uuid,
-        rot: rot
-    };
+    return { rot: rot };
 }
-function checkProp(data) {
-    if (!(Array.isArray(data) && data.length == 3) ||
-        !(typeof data[0] === "string" && data[0].length == 13) ||
+function checkProp(uuid, data) {
+    if (!(Array.isArray(data) && data.length == 2) ||
+        !(typeof data[0] === "string") ||
         !(typeof data[1] === "string"))
         return false;
-    let uuid = data[0];
-    let prop = data[1];
-    let value = data[2];
+    let prop = data[0];
+    let value = data[1];
     if (!Users_1.Users[uuid].props.hasOwnProperty(prop))
         return false;
     if (value == Users_1.Users[uuid].props[prop])
         return false;
     return {
-        uuid: uuid,
         prop: prop,
         value: value
     };
+}
+function checkChat(data) {
+    if (!(typeof data === "string" && data[0].length > 0 && data[0].length < 280))
+        return false;
+    let msg = data;
+    return { msg: msg };
 }
 io.on('connection', function (conn) {
     let res = check(conn.handshake.query);
@@ -158,38 +149,45 @@ io.on('connection', function (conn) {
         }
     });
     conn.on('rename', function (data) {
-        let res = checkName(data);
+        let res = checkName(uuid, data);
         if (!res)
             return;
-        let { uuid, nickname } = res;
-        console.info(`\tUser '${Users_1.Users[nickname]}' (${uuid}) renamed to '${nickname}'.`);
+        let { nickname } = res;
+        console.info(`\tUser '${Users_1.Users[uuid].nickname}' (${uuid}) renamed to '${nickname}'.`);
         Users_1.Users[uuid].nickname = nickname;
         io.to(room).emit("rename", [uuid, nickname]);
     });
     conn.on('move', function (data) {
-        let res = checkPos(data);
+        let res = checkPos(uuid, data);
         if (!res)
             return;
-        let { uuid, pos } = res;
+        let { pos } = res;
         Users_1.Users[uuid].pos = pos;
         io.to(room).emit("move", [uuid, pos.x, pos.y, pos.z]);
     });
     conn.on('rotate', function (data) {
-        let res = checkRot(data);
+        let res = checkRot(uuid, data);
         if (!res)
             return;
-        let { uuid, rot } = res;
+        let { rot } = res;
         Users_1.Users[uuid].rot = rot;
         io.to(room).emit("rotate", [uuid, rot.x, rot.y, rot.z]);
     });
     conn.on('change', function (data) {
-        let res = checkProp(data);
+        let res = checkProp(uuid, data);
         if (!res)
             return;
         console.debug("res change", res);
-        let { uuid, prop, value } = res;
+        let { prop, value } = res;
         Users_1.Users[uuid].props[prop] = value;
         io.to(room).emit("change", [uuid, prop, value]);
+    });
+    conn.on('chat', function (data) {
+        let res = checkChat(data);
+        if (!res)
+            return;
+        let { msg } = res;
+        io.to(room).emit("chat", [uuid, msg]);
     });
     conn.on('disconnect', function () {
         console.info(`User '${nickname}' (${uuid}) left.`);
