@@ -101,90 +101,100 @@ export const Users = new Proxy({}, {
         /*
         if(target.hasOwnProperty(uuid)){
             return false
-        }*/
-        if (uuid == 'me') {
-            user.add.detail.uuid = 'me';
-            user.rename.detail.uuid = 'me';
-            user.leave.detail.uuid = 'me';
-            user.change.detail.uuid = 'me';
-            user.move.detail.uuid = 'me';
-            user.rotate.detail.uuid = 'me';
-            user.change.detail.uuid = 'me';
-            target[uuid] = new Proxy(user, {
-                get: function (target, prop) {
-                    if (prop == "pos") {
-                        return new Proxy(target.pos, {
-                            get: function (pos, prop) {
-                                return pos[prop];
-                            },
-                            set: function (pos, prop, value) {
-                                if (!pos.hasOwnProperty(prop) ||
-                                    !(typeof value == "number"))
-                                    return false;
-                                pos[prop] = value;
-                                target.move.detail.pos = pos;
-                                dispatchEvent(target.move);
-                                return true;
-                            }
-                        });
-                    }
-                    if (prop == "rot") {
-                        return new Proxy(target.rot, {
-                            get: function (rot, prop) {
-                                return rot[prop];
-                            },
-                            set: function (rot, prop, value) {
-                                if (!rot.hasOwnProperty(prop) ||
-                                    !(typeof value == "number"))
-                                    return false;
-                                rot[prop] = value;
-                                target.rotate.detail.rot = rot;
-                                dispatchEvent(target.rotate);
-                                return true;
-                            }
-                        });
-                    }
-                    if (target.props.hasOwnProperty(prop))
-                        return target.props[prop];
-                    return target[prop];
-                },
-                set: function (target, prop, value) {
-                    if (prop == 'uuid' || prop == 'room')
-                        return false;
-                    if (prop == 'nickname' && target.nickname != value) {
-                        target.rename.detail.oldName = target.nickname;
-                        target.nickname = value;
-                        dispatchEvent(target.rename);
-                        return true;
-                    }
-                    else if (prop == 'pos' && target.pos != value) {
-                        if (!checkPos('me', value))
-                            return;
-                        target.pos = value;
-                        target.move.detail.pos = value;
-                        dispatchEvent(target.move);
-                        return true;
-                    }
-                    else if (prop == 'rot' && target.rot != value) {
-                        console.debug(checkRot('me', value), "asdfsdfdsf");
-                        if (!checkRot('me', value))
-                            return;
-                        target.rot = value;
-                        target.rotate.detail.rot = value;
-                        dispatchEvent(target.rotate);
-                        return true;
-                    }
-                    target.props[prop] = value;
-                    target.change.detail.prop = prop.toString();
-                    target.change.detail.value = value;
-                    dispatchEvent(target.change);
+        }
+        if(uuid == 'me'){
+
+            user.add.detail.uuid = 'me'
+            user.rename.detail.uuid = 'me'
+            user.leave.detail.uuid = 'me'
+            user.change.detail.uuid = 'me'
+            user.move.detail.uuid = 'me'
+            user.rotate.detail.uuid = 'me'
+            user.change.detail.uuid = 'me'
+        }
+            */
+        user.add.detail.uuid = uuid;
+        user.rename.detail.uuid = uuid;
+        user.leave.detail.uuid = uuid;
+        user.change.detail.uuid = uuid;
+        user.move.detail.uuid = uuid;
+        user.rotate.detail.uuid = uuid;
+        user.change.detail.uuid = uuid;
+        target[uuid] = new Proxy(user, {
+            get: function (target, prop) {
+                if (prop == "pos") {
+                    return new Proxy(target.pos, {
+                        get: function (pos, prop) {
+                            return pos[prop];
+                        },
+                        set: function (pos, prop, value) {
+                            if (!pos.hasOwnProperty(prop) ||
+                                !(typeof value == "number"))
+                                return false;
+                            pos[prop] = value;
+                            target.move.detail.pos = pos;
+                            dispatchEvent(target.move);
+                            return true;
+                        }
+                    });
+                }
+                if (prop == "rot") {
+                    return new Proxy(target.rot, {
+                        get: function (rot, prop) {
+                            return rot[prop];
+                        },
+                        set: function (rot, prop, value) {
+                            if (!rot.hasOwnProperty(prop) ||
+                                !(typeof value == "number"))
+                                return false;
+                            rot[prop] = value;
+                            target.rotate.detail.rot = rot;
+                            dispatchEvent(target.rotate);
+                            return true;
+                        }
+                    });
+                }
+                if (target.props.hasOwnProperty(prop))
+                    return target.props[prop];
+                return target[prop];
+            },
+            set: function (target, prop, value) {
+                if (prop == 'uuid' || prop == 'room')
+                    return false;
+                if (prop == 'nickname' && target.nickname != value) {
+                    target.rename.detail.oldName = target.nickname;
+                    target.nickname = value;
+                    dispatchEvent(target.rename);
                     return true;
                 }
-            });
-        }
-        else {
-            target[uuid] = user;
-        }
+                else if (prop == 'pos' && target.pos != value) {
+                    if (!checkPos(uuid, value))
+                        return true;
+                    target.pos = value;
+                    target.move.detail.pos = value;
+                    dispatchEvent(target.move);
+                    return true;
+                }
+                else if (prop == 'rot' && target.rot != value) {
+                    if (!checkRot(uuid, value))
+                        return true;
+                    target.rot = value;
+                    target.rotate.detail.rot = value;
+                    dispatchEvent(target.rotate);
+                    return true;
+                }
+                target.props[prop] = value;
+                target.change.detail.prop = prop.toString();
+                target.change.detail.value = value;
+                dispatchEvent(target.change);
+                return true;
+            }
+        });
+        /*
+    }else{
+        target[uuid] = user
+    }
+         */
         return true;
     },
     has: function (target, prop) {

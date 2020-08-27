@@ -197,7 +197,7 @@ export const Users:Users = new Proxy({},{
 		/*
 		if(target.hasOwnProperty(uuid)){
 			return false
-		}*/
+		}
 		if(uuid == 'me'){
 
 			user.add.detail.uuid = 'me'
@@ -207,6 +207,16 @@ export const Users:Users = new Proxy({},{
 			user.move.detail.uuid = 'me'
 			user.rotate.detail.uuid = 'me'
 			user.change.detail.uuid = 'me'
+		}
+			*/
+		
+		user.add.detail.uuid = uuid
+		user.rename.detail.uuid = uuid
+		user.leave.detail.uuid = uuid
+		user.change.detail.uuid =  uuid
+		user.move.detail.uuid = uuid
+		user.rotate.detail.uuid = uuid
+		user.change.detail.uuid = uuid
 
 			target[uuid] = new Proxy(user,{
 				get: function(target, prop){
@@ -258,16 +268,15 @@ export const Users:Users = new Proxy({},{
 						return true
 					}else if(prop == 'pos' && target.pos != value){
 
-						if(!checkPos('me', value)) return
+						if(!checkPos(uuid, value)) return true
 						target.pos = value
 
 						target.move.detail.pos = value
 						dispatchEvent(target.move)
 						return true
 					}else if(prop == 'rot' && target.rot != value){
-						console.debug(checkRot('me', value),"asdfsdfdsf")
 
-						if(!checkRot('me', value)) return
+						if(!checkRot(uuid, value)) return true
 						target.rot = value
 						target.rotate.detail.rot = value
 						dispatchEvent(target.rotate)
@@ -284,10 +293,11 @@ export const Users:Users = new Proxy({},{
 					return true
 				}
 			})
+			/*
 		}else{
 			target[uuid] = user
 		}
-
+			 */
 		return true
 	},
 	has: function(target, prop){
