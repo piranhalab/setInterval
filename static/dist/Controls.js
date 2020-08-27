@@ -38,6 +38,11 @@ export const Controls = {
         document.addEventListener("click", function (e) {
             Controls.controls.lock();
         });
+        window.addEventListener("moveUser", function (event) {
+            let uuid = event.detail.uuid;
+            let pos = event.detail.pos;
+            Scene.camera.position.set(pos.x, pos.y, pos.z);
+        });
     },
     addMobile: function (Scene) {
     }

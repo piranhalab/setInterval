@@ -48,8 +48,6 @@ export const Avatar:Avatar = {
 
 		// load fonts
 
-		let loader = new THREE.FontLoader();
-		let font = loader.load( '/fonts/helvetiker_regular.typeface.json')
 
 
 
@@ -120,30 +118,33 @@ export const Avatar:Avatar = {
 		this.initEvents(Scene)
 		return this
 	},
-	createLabel: function(nickname:string){
+	createLabel: function(nickname:string, avatar){
 
-		let textLabel;
-		let matDark = new THREE.LineBasicMaterial( {
-			color: 0xffffff,
-			side: THREE.DoubleSide,
-			transparent: true,
-			opacity: 0.5
-		} );
+		let loader = new THREE.FontLoader();
+		loader.load( '/fonts/helvetiker_regular.typeface.json',function(font){
+		
+			let textLabel;
+			let matDark = new THREE.LineBasicMaterial( {
+				color: 0xffffff,
+				side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 0.5
+			} );
 
-		var shapes = font.generateShapes( nickname, 2 );
-		var geometry = new THREE.ShapeBufferGeometry( shapes );
-		geometry.computeBoundingBox();
+			var shapes = font.generateShapes( nickname, 2 );
+			var geometry = new THREE.ShapeBufferGeometry( shapes );
+			geometry.computeBoundingBox();
 
-		var xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x);
-		geometry.translate( xMid, 0, 0 );
-		textLabel = new THREE.Mesh( geometry, matDark );
+			var xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+			geometry.translate( xMid, 0, 0 );
+			textLabel = new THREE.Mesh( geometry, matDark );
 
-		textLabel.position.x = 0;
-		textLabel.position.y = Avatar.offsetNicknameY;
-		textLabel.position.z = 0;
+			textLabel.position.x = 0;
+			textLabel.position.y = Avatar.offsetNicknameY;
+			textLabel.position.z = 0;
 
-		return textLabel
-
+			avatar.add(textLabel)
+		})
 	},
 	initEvents: function(Scene, offsetY){
 		window.addEventListener("addUser", function(event:CustomEvent){
@@ -153,14 +154,11 @@ export const Avatar:Avatar = {
 			let rot = Users[uuid].rot
 
 			let avt = Avatar.avatar.clone()
-			let label = Avatar.createLabel(nickname)
+			Avatar.createLabel(nickname, avt)
 
-			avt.add(label)
-
-			avt.position.set(pos.x,pos.y,pos.z)
+			avt.position.set(pos.x,pos.y+Avatar.offsetY,pos.z)
 
 			Scene.scene.add(avt)
-			console.debug("AAAAAAA avatar",uuid )
 			Avatar.avatars[uuid] = avt
 			
 
@@ -192,12 +190,12 @@ export const Avatar:Avatar = {
 			let pos = event.detail.pos
 
 			let avt = Avatar.avatars[uuid]
-			avt.position.set(pos.x, pos.y, pos.z)
+			avt.position.set(pos.x,pos.y+Avatar.offsetY,pos.z)
 		})
 		
 	},
-	offsetY:0,
-	offsetNicknameY:0,
+	offsetY:-14,
+	offsetNicknameY:14,
 }
 
 

@@ -24,6 +24,7 @@ export const Avatar = {
             texture.repeat.set(1, 1);
         });
         this.textures = [texture1, texture2, texture3, texture4];
+        // load fonts
         let group = new THREE.Group();
         let avatar = new THREE.Group();
         let avbodyMaterial = new THREE.MeshBasicMaterial({
@@ -68,26 +69,27 @@ export const Avatar = {
         this.initEvents(Scene);
         return this;
     },
-    createLabel: function (nickname) {
+    createLabel: function (nickname, avatar) {
         let loader = new THREE.FontLoader();
-        let textLabel;
-        let font = loader.load('/fonts/helvetiker_regular.typeface.json');
-        let matDark = new THREE.LineBasicMaterial({
-            color: 0xffffff,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.5
+        loader.load('/fonts/helvetiker_regular.typeface.json', function (font) {
+            let textLabel;
+            let matDark = new THREE.LineBasicMaterial({
+                color: 0xffffff,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.5
+            });
+            var shapes = font.generateShapes(nickname, 2);
+            var geometry = new THREE.ShapeBufferGeometry(shapes);
+            geometry.computeBoundingBox();
+            var xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+            geometry.translate(xMid, 0, 0);
+            textLabel = new THREE.Mesh(geometry, matDark);
+            textLabel.position.x = 0;
+            textLabel.position.y = Avatar.offsetNicknameY;
+            textLabel.position.z = 0;
+            avatar.add(textLabel);
         });
-        var shapes = font.generateShapes(nickname, 2);
-        var geometry = new THREE.ShapeBufferGeometry(shapes);
-        geometry.computeBoundingBox();
-        var xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
-        geometry.translate(xMid, 0, 0);
-        textLabel = new THREE.Mesh(geometry, matDark);
-        textLabel.position.x = 0;
-        textLabel.position.y = Avatar.offsetNicknameY;
-        textLabel.position.z = 0;
-        return textLabel;
     },
     initEvents: function (Scene, offsetY) {
         window.addEventListener("addUser", function (event) {
@@ -96,11 +98,9 @@ export const Avatar = {
             let pos = Users[uuid].pos;
             let rot = Users[uuid].rot;
             let avt = Avatar.avatar.clone();
-            let label = Avatar.createLabel(nickname);
-            avt.add(label);
-            avt.position.set(pos.x, pos.y, pos.z);
+            Avatar.createLabel(nickname, avt);
+            avt.position.set(pos.x, pos.y + Avatar.offsetY, pos.z);
             Scene.scene.add(avt);
-            console.debug("AAAAAAA avatar", uuid);
             Avatar.avatars[uuid] = avt;
         });
         window.addEventListener("removeUser", function (event) {
@@ -122,9 +122,9 @@ export const Avatar = {
             const uuid = event.detail.uuid;
             let pos = event.detail.pos;
             let avt = Avatar.avatars[uuid];
-            avt.position.set(pos.x, pos.y, pos.z);
+            avt.position.set(pos.x, pos.y + Avatar.offsetY, pos.z);
         });
     },
-    offsetY: 0,
-    offsetNicknameY: 0,
+    offsetY: -14,
+    offsetNicknameY: 14,
 };
