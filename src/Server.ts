@@ -55,6 +55,7 @@ function checkName(uuid, data){
 	) return false
 	let nickname = data
 
+	if(!Users.hasOwnProperty(uuid)) return false
 	if(nickname == Users[uuid].nickname) return false
 	return {nickname: nickname}
 }
@@ -73,6 +74,7 @@ function checkPos(uuid, data){
 		z: data[2],
 	}
 
+	if(!Users.hasOwnProperty(uuid)) return false
         if(pos == Users[uuid].pos) return false
 	return { pos:pos }
 }
@@ -91,6 +93,7 @@ function checkRot(uuid, data){
 		z: data[2],
 	}
 
+	if(!Users.hasOwnProperty(uuid)) return false
         if(rot == Users[uuid].rot) return false
 	return { rot: rot }
 }
@@ -105,6 +108,7 @@ function checkProp(uuid, data){
 	let prop = data[0]
 	let value = data[1]
 
+	if(!Users.hasOwnProperty(uuid)) return false
 	if(!Users[uuid].props.hasOwnProperty(prop)) return false
 	if(value == Users[uuid].props[prop]) return false
 	return {

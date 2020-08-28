@@ -5,9 +5,10 @@ import {Avatar} from "./Scene/Avatar.js"
 
 import {addFloor}  from "./Scene/Floor.js"
 import {addCube}  from "./Scene/Cube.js"
+import {addScreens} from "./Scene/Screens.js" 
 
 declare global{
-	interface Window { Scene: any; }
+	interface Window { Scene: any; THREE:any }
 }
 
 export interface Scene {
@@ -31,6 +32,7 @@ export const Scene:Scene = {
 		
 		this.Floor = addFloor(this)
 		this.Cube = addCube(this)
+		this.Screens = addScreens(this)
 		this.animate()
 	},
 	animate: function(){
@@ -47,4 +49,4 @@ window.addEventListener( 'resize', function onWindowResize(){
 },false)
 
 window.Scene = Scene
-
+window.THREE = THREE

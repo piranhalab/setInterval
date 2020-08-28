@@ -130,7 +130,8 @@ export const Users = new Proxy({}, {
                         set: function (pos, prop, value) {
                             if (!pos.hasOwnProperty(prop) ||
                                 !(typeof value == "number"))
-                                return false;
+                                return true;
+                            value = value;
                             pos[prop] = value;
                             target.move.detail.pos = pos;
                             dispatchEvent(target.move);
@@ -146,7 +147,8 @@ export const Users = new Proxy({}, {
                         set: function (rot, prop, value) {
                             if (!rot.hasOwnProperty(prop) ||
                                 !(typeof value == "number"))
-                                return false;
+                                return true;
+                            value = value;
                             rot[prop] = value;
                             target.rotate.detail.rot = rot;
                             dispatchEvent(target.rotate);
@@ -170,6 +172,9 @@ export const Users = new Proxy({}, {
                 else if (prop == 'pos' && target.pos != value) {
                     if (!checkPos(uuid, value))
                         return true;
+                    value.x = value.x;
+                    value.y = value.y;
+                    value.z = value.z;
                     target.pos = value;
                     target.move.detail.pos = value;
                     dispatchEvent(target.move);
@@ -178,6 +183,9 @@ export const Users = new Proxy({}, {
                 else if (prop == 'rot' && target.rot != value) {
                     if (!checkRot(uuid, value))
                         return true;
+                    value.x = value.x;
+                    value.y = value.y;
+                    value.z = value.z;
                     target.rot = value;
                     target.rotate.detail.rot = value;
                     dispatchEvent(target.rotate);

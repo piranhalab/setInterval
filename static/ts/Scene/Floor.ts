@@ -1,7 +1,7 @@
 import * as THREE from "../three/build/three.module.js";
 
 export const addFloor = function(Scene):THREE.Mesh{
-	let geom = new THREE.PlaneGeometry( 500, 200, 320 );
+	let geom = new THREE.PlaneGeometry( 500, 200);
 	let mat = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
 	let floor = new THREE.Mesh(geom, mat)
 

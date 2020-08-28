@@ -16,9 +16,12 @@
     "@types/socket.io-client": "^1.4.33",
     "bootstrap": "^4.5.2",
     "express": "^4.17.1",
+    "p2p-media-loader-core": "^0.6.2",
+    "p2p-media-loader-hlsjs": "^0.6.2",
     "socket.io-client": "^2.3.0",
     "socket.io-redis": "^5.3.0",
     "three": "^0.119.1",
+    "video.js": "^7.8.4",
     "webpack": "^4.44.1"
   },
   "devDependencies": {

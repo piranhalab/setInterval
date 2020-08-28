@@ -3,35 +3,14 @@ import { Users } from "../Users.js";
 export const Avatar = {
     avatars: {},
     init: function (Scene) {
-        let texture1 = new THREE.TextureLoader().load('/img/avTex1.jpg', function (texture) {
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.offset.set(0.6, 0.6);
-            texture.repeat.set(1, 1);
-        });
-        let texture2 = new THREE.TextureLoader().load('/img/avTex2.jpg', function (texture) {
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.offset.set(0.6, 0.6);
-            texture.repeat.set(1, 1);
-        });
-        let texture3 = new THREE.TextureLoader().load('img/avTex3.jpg', function (texture) {
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.offset.set(0.6, 0.6);
-            texture.repeat.set(1, 1);
-        });
-        let texture4 = new THREE.TextureLoader().load('img/avTex4.jpg', function (texture) {
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.offset.set(0.6, 0.6);
-            texture.repeat.set(1, 1);
-        });
-        this.textures = [texture1, texture2, texture3, texture4];
-        // load fonts
+        this.addTextures();
         let group = new THREE.Group();
         let avatar = new THREE.Group();
         let avbodyMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             //metalness: 0.9,
             ////roughness: 0.8,
-            map: texture1,
+            map: this.textures[0],
         });
         let avbodyGeometry = new THREE.CylinderGeometry(1.5, 0.5, 6, 32);
         let avbodyMesh = new THREE.Mesh(avbodyGeometry, avbodyMaterial);
@@ -63,11 +42,32 @@ export const Avatar = {
         //aveyeSphere.scale.y = 0.5;
         aveye2Sphere.scale.z = 0.25;
         group.add(aveye2Sphere);
-        //edges.scene.add(group);
-        //
         this.avatar = group;
         this.initEvents(Scene);
         return this;
+    },
+    addTextures: function () {
+        let texture1 = new THREE.TextureLoader().load('/img/avTex1.jpg', function (texture) {
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.offset.set(0.6, 0.6);
+            texture.repeat.set(1, 1);
+        });
+        let texture2 = new THREE.TextureLoader().load('/img/avTex2.jpg', function (texture) {
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.offset.set(0.6, 0.6);
+            texture.repeat.set(1, 1);
+        });
+        let texture3 = new THREE.TextureLoader().load('img/avTex3.jpg', function (texture) {
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.offset.set(0.6, 0.6);
+            texture.repeat.set(1, 1);
+        });
+        let texture4 = new THREE.TextureLoader().load('img/avTex4.jpg', function (texture) {
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.offset.set(0.6, 0.6);
+            texture.repeat.set(1, 1);
+        });
+        this.textures = [texture1, texture2, texture3, texture4];
     },
     createLabel: function (nickname, avatar) {
         let loader = new THREE.FontLoader();
@@ -99,9 +99,16 @@ export const Avatar = {
             let rot = Users[uuid].rot;
             let avt = Avatar.avatar.clone();
             Avatar.createLabel(nickname, avt);
-            avt.position.set(pos.x, pos.y + Avatar.offsetY, pos.z);
+            avt.position.set(pos.x, pos.y + Avatar.offsetY, pos.z - 1);
             Scene.scene.add(avt);
             Avatar.avatars[uuid] = avt;
+        });
+        window.addEventListener("renameUser", function (event) {
+            const uuid = event.detail.uuid;
+            let nickname = Users[uuid].nickname;
+            let avt = Avatar.avatars[uuid];
+            avt.children.filter(child => child.geometry.type == "ShapeBufferGeometry").forEach(child => avt.remove(child));
+            Avatar.createLabel(nickname, avt);
         });
         window.addEventListener("removeUser", function (event) {
             const uuid = event.detail.uuid;
@@ -116,15 +123,36 @@ export const Avatar = {
             const uuid = event.detail.uuid;
             let rot = event.detail.rot;
             let avt = Avatar.avatars[uuid];
-            avt.rotation.y = rot.y;
+            avt.rotation.y = -rot.y;
+            if (uuid != "me") {
+                avt.children.filter(child => child.geometry.type == "ShapeBufferGeometry").forEach(child => child.lookAt(Scene.camera.position));
+            }
         });
         window.addEventListener("moveUser", function (event) {
             const uuid = event.detail.uuid;
             let pos = event.detail.pos;
             let avt = Avatar.avatars[uuid];
-            avt.position.set(pos.x, pos.y + Avatar.offsetY, pos.z);
+            let oldPos = avt.position.clone();
+            oldPos.y -= Avatar.offsetY;
+            let k = 0;
+            let n = 10;
+            let f = x => oldPos.y + (x - oldPos.x) * ((pos.y - oldPos.y) / (pos.x - oldPos.x));
+            let dx = (pos.x - oldPos.x + Number.EPSILON) / n;
+            let dy = (pos.y - oldPos.y + Number.EPSILON) / n;
+            let dz = (pos.z - oldPos.z + Number.EPSILON) / n;
+            let interpolation = setInterval(function () {
+                if (k < n) {
+                    avt.position.set(oldPos.x + (dx * k), oldPos.y + (dy * k) + Avatar.offsetY, oldPos.z + (dz * k));
+                }
+                if (k >= n) {
+                    avt.position.set(pos.x, pos.y + Avatar.offsetY, pos.z);
+                    avt.children.filter(child => child.geometry.type == "ShapeBufferGeometry").forEach(child => child.lookAt(Scene.camera.position));
+                    clearInterval(interpolation);
+                }
+                k++;
+            }, 10);
         });
     },
     offsetY: -14,
-    offsetNicknameY: 14,
+    offsetNicknameY: 20,
 };

@@ -44,6 +44,8 @@ function checkName(uuid, data) {
     if (!(typeof data === "string" && data.length > 0 && data.length < 30))
         return false;
     let nickname = data;
+    if (!Users_1.Users.hasOwnProperty(uuid))
+        return false;
     if (nickname == Users_1.Users[uuid].nickname)
         return false;
     return { nickname: nickname };
@@ -59,6 +61,8 @@ function checkPos(uuid, data) {
         y: data[1],
         z: data[2],
     };
+    if (!Users_1.Users.hasOwnProperty(uuid))
+        return false;
     if (pos == Users_1.Users[uuid].pos)
         return false;
     return { pos: pos };
@@ -74,6 +78,8 @@ function checkRot(uuid, data) {
         y: data[1],
         z: data[2],
     };
+    if (!Users_1.Users.hasOwnProperty(uuid))
+        return false;
     if (rot == Users_1.Users[uuid].rot)
         return false;
     return { rot: rot };
@@ -85,6 +91,8 @@ function checkProp(uuid, data) {
         return false;
     let prop = data[0];
     let value = data[1];
+    if (!Users_1.Users.hasOwnProperty(uuid))
+        return false;
     if (!Users_1.Users[uuid].props.hasOwnProperty(prop))
         return false;
     if (value == Users_1.Users[uuid].props[prop])

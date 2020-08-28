@@ -27,3 +27,4 @@ window.addEventListener('resize', function onWindowResize() {
     Scene.renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
 window.Scene = Scene;
+window.THREE = THREE;
