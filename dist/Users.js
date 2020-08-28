@@ -31,5 +31,5 @@ class User {
     }
 }
 exports.User = User;
-exports.Users = [];
+exports.Users = {};
 //# sourceMappingURL=Users.js.map
