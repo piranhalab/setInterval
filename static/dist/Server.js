@@ -115,11 +115,6 @@ window.addEventListener("renameUser", function (event) {
 window.addEventListener("moveUser", function (event) {
     const uuid = event.detail.uuid;
     let pos = event.detail.pos;
-    pos = {
-        x: pos.x.toFixed(5),
-        y: pos.y.toFixed(5),
-        z: pos.z.toFixed(5),
-    };
     if (uuid == "me" && Server.socket) {
         Server.socket.emit("move", [pos.x, pos.y, pos.z]);
     }
@@ -127,11 +122,6 @@ window.addEventListener("moveUser", function (event) {
 window.addEventListener("rotateUser", function (event) {
     const uuid = event.detail.uuid;
     let rot = event.detail.rot;
-    rot = {
-        x: rot.x.toFixed(5),
-        y: rot.y.toFixed(5),
-        z: rot.z.toFixed(5),
-    };
     if (uuid == "me" && Server.socket) {
         Server.socket.emit("rotate", [rot.x, rot.y, rot.z]);
     }
