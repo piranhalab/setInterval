@@ -1,11 +1,21 @@
 import * as THREE from "../three/build/three.module.js";
 
 export const addScreens = function(Scene):THREE.Mesh{
-	let geom = new THREE.PlaneGeometry( 10, 10 );
-	let mat = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+	let geom = new THREE.PlaneGeometry( 20, 20 );
+	let mat = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide} );
 	let Screen = new THREE.Mesh(geom, mat)
 
-	Screen.rotateX(-Math.PI/2)
+	Screen.position.y = 5
 	Scene.scene.add(Screen)
+
+	window.addEventListener("startStream",function(event:CustomEvent){
+		let id = event.detail.id
+		
+		let vid = document.querySelector(`#${id}`).querySelector("video")
+		let map = new THREE.VideoTexture( vid );
+		Screen.material.map = map
+		Screen.material.needsUpdate = true
+	})
+
 	return Screen
 }
