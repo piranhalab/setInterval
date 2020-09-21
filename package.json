@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && tsc static/ts/main.ts --outDir  static/dist  --target es6 && npx webpack",
     "build-test": "tsc static/ts/main.ts --outDir  static/dist  --target es6",
-    "start": "nodemon dist/Server.js",
+    "start": "node dist/Server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
     "hls.js": "^0.14.10",
     "p2p-media-loader-core": "^0.6.2",
     "p2p-media-loader-hlsjs": "^0.6.2",
+    "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "socket.io-redis": "^5.3.0",
     "three": "^0.119.1",
