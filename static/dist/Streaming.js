@@ -8,10 +8,11 @@ export const Streaming = {
 	streamingCont.style.zIndex = "-2"; 
         streamingCont.id = "streaming-main";
 
-
 	
         document.body.appendChild(streamingCont);
         //const videoSrc = "http://127.0.0.1:8000/live/test/index.m3u8";
+
+	/*
         const videoSrc = "http://198.211.106.132:8000/live/test/index.m3u8";
         let player = new Clappr.Player({
             source: videoSrc,
@@ -28,6 +29,8 @@ export const Streaming = {
                 }
             }
         });
+	*/
+ 
         /*
             
         if (p2pml.hlsjs.Engine.isSupported()) {
@@ -43,16 +46,16 @@ export const Streaming = {
         }
          */
         function retry() {
-            player.configure(player.options);
-            player.play();
+         //   player.configure(player.options);
+         //   player.play();
         }
-        window.player = player;
-        player.attachTo(streamingCont);
+       //window.player = player;
+       // player.attachTo(streamingCont);
 	let comoSea = streamingCont.querySelector("video");
-	comoSea.style.display = "none";
-        window.document.body.addEventListener("click", function () {
-            player.play();
-        });
+	// comoSea.style.display = "none";
+       //window.document.body.addEventListener("click", function () {
+       //     player.play();
+       // });
     },
     startStreaming: new CustomEvent("startStream", { detail: { id: "streaming-main" } })
 };
