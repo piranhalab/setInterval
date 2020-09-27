@@ -2,17 +2,19 @@ export const Streaming = {
     init: function () {
         let streamingCont = document.createElement('div');
 
-	//streamingCont.style.display = "block";
-	streamingCont.style.position = "absolute";
-	streamingCont.style.top = "0%";
-	streamingCont.style.zIndex = "-2"; 
+	// let streamingCont = document.createElement('div');
+        streamingCont.style.display = "none";
         streamingCont.id = "streaming-main";
 
+	//streamingCont.style.display = "block";
+	//streamingCont.style.position = "absolute";
+	//streamingCont.style.top = "0%";
+	//streamingCont.style.zIndex = "-2"; 
+        //streamingCont.id = "streaming-main";
 	
         document.body.appendChild(streamingCont);
         //const videoSrc = "http://127.0.0.1:8000/live/test/index.m3u8";
-
-	/*
+	
         const videoSrc = "http://198.211.106.132:8000/live/test/index.m3u8";
         let player = new Clappr.Player({
             source: videoSrc,
@@ -29,7 +31,6 @@ export const Streaming = {
                 }
             }
         });
-	*/
  
         /*
             

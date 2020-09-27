@@ -101,11 +101,11 @@ export const addCube = function (Scene) {
     //let mat = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
     // var mat = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 
-    var video = document.getElementById( 'videooo' );
+    //var video = document.getElementById( 'videooo' );
 
-    let texture = new THREE.VideoTexture( video );
+    // let texture = new THREE.VideoTexture( video );
 
-    video.play();
+    // video.play();
     
     //var texture = new THREE.TextureLoader().load( "/img/casa.jpg" );
 
@@ -118,7 +118,7 @@ export const addCube = function (Scene) {
 	//metalness: 0.8,
 	// roughness: 0.8,
 	side: THREE.DoubleSide, 
-  	 map: texture
+  //	 map: texture
         //transparent: true,
         //opacity: 0.75,
     });
@@ -127,14 +127,22 @@ export const addCube = function (Scene) {
 
     let Cube = new THREE.Mesh(geometry, mat);
     window.Cube = Cube; 
+
+    window.addEventListener("startStream", function (event) {
+	let id = event.detail.id;
+        let vid = document.querySelector(`#${id}`).querySelector("video");
+        let map = new THREE.VideoTexture(vid);
+        Cube.material.map = map;
+        Cube.material.needsUpdate = true;
+    });
     
     Cube.geometry.verticesNeedUpdate = true;
-   Cube.geometry.normalsNeedUpdate = true;
-   Cube.material.needsUpdate = true; 
-   Cube.material.map.needsUpdate = true;
+    Cube.geometry.normalsNeedUpdate = true;
+    Cube.material.needsUpdate = true; 
+    // Cube.material.map.needsUpdate = true;
    
     // Cube.position.x = -20;
-
+    
     Cube.position.y = 10; 
     Scene.scene.add(Cube);
 
@@ -142,18 +150,7 @@ export const addCube = function (Scene) {
     //var materialP = new THREE.MeshBasicMaterial( {color: 0xffff00, map: texture, side: THREE.DoubleSide} );
     //var planeP = new THREE.Mesh( geometryP, materialP );
     //Scene.scene.add( planeP );
-    
-    /*
- window.addEventListener("startStream", function (event) {
-        let id = event.detail.id;
-        let vid = document.querySelector(`#${id}`).querySelector("video");
-        let map = new THREE.VideoTexture(vid);
-        Cube.material.map = map;
-        Cube.material.needsUpdate = true;
-    });
-    */
-
-    
+        
     rotate(Cube);
     return Cube;
     // screw(geometry);
