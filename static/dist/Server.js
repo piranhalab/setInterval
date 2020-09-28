@@ -16,7 +16,7 @@ export const Server = {
             rot: rot,
             room: room
         });
-        const socket = io("http://localhost:3000", { query: `uuid=${user.uuid}&room=${user.room}&nickname=${user.nickname}&pos=${JSON.stringify(user.pos)}&rot=${JSON.stringify(user.rot)}` });
+        const socket = io("http://172.20.10.2:3000", { query: `uuid=${user.uuid}&room=${user.room}&nickname=${user.nickname}&pos=${JSON.stringify(user.pos)}&rot=${JSON.stringify(user.rot)}` });
         Users.me = user;
         socket.on("connect", function (conn) {
             Server.socket = socket;
