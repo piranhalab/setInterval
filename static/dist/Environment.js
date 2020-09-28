@@ -3,11 +3,13 @@ export const Environment = {
     room: "edges",
     initialPos: { x: 0, y: 14, z: 0 },
     initialRot: { x: 0, y: 0, z: 0 },
+    api: false
 };
 export function retrieveData() {
     let params = {};
     // get params from local Storage
     let uuid = localStorage.getItem("uuid");
+    uuid = "testing";
     let nickname = localStorage.getItem("nickname");
     let props = localStorage.getItem("props");
     if (!uuid || uuid.length != 13) {
@@ -25,6 +27,7 @@ export function retrieveData() {
         }
     }
     let url = new URL(window.location.href);
+    let api = url.searchParams.get("api");
     let nickname_url = url.searchParams.get("nickname");
     let props_url = url.searchParams.get("props");
     if (nickname_url) {
@@ -38,6 +41,8 @@ export function retrieveData() {
             props_url = {};
         }
     }
+    if (api)
+        Environment.api = true;
     props = props_url;
     localStorage.setItem("uuid", uuid);
     localStorage.setItem("nickname", nickname);
