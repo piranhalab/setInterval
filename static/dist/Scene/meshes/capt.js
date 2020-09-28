@@ -1,6 +1,6 @@
 import * as THREE from "../../three/build/three.module.js";
-import { GLTFLoader } from '/js/three/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from '/js/three/examples/jsm/loaders/DRACOLoader.js';
+import { GLTFLoader } from '/dist/three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from '/dist/three/examples/jsm/loaders/DRACOLoader.js';
 
 export const addCapt = function (Scene) {
 
