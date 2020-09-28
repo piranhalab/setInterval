@@ -5,7 +5,9 @@ export interface User {
 	rot: {x:number, y:number, z:number}
 	room: string
 	props:{	
-		avatar: any
+		avatar: any,
+		mesh: any,
+		bg:any
 	}
 	conn: any
 }

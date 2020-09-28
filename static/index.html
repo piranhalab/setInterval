@@ -1,32 +1,154 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-	<meta charset="UTF-8">
-	<title>test</title>
-	<style>
-		body { margin: 0; background: rgb(238,174,202);
-background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,189,233,1) 100%); }
-		canvas { display: block; }
-		
-		
-	</style>
-	<script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-core@latest/build/p2p-media-loader-core.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-hlsjs@latest/build/p2p-media-loader-hlsjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/clappr@latest"></script>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Edgese - setInterval</title> 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </head>
 <body>
-	<div id="scene"></div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.3.2/flv.min.js"></script>
-	<!-- <script src="/bundle.js" type="module"></script> -->
-	<script src="/dist/main.js" type="module"></script>
+  <!-- The Modal -->
+  <div class="modal" tabindex="-1"  id="myModal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
 
+        <!-- Modal Header -->
+        <div class="modal-header   bg-dark text-light">
+        <div class="container-fluid">
+        <div class="row">
+          <h1 class="modal-title col-11  text-center">Edges | setInterval()</h1>
+          <button type="button" class=" btn btn-secondary btn-sm" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="row">
+        <div class="col-5"></div>
+                  <img src="https://piranhalab.cc/img/logo-03.png"alt="piranhalab" class="img-thumbnail col-1">
+                  <img src="https://piranhalab.cc/img/logo-03.png"alt="piranhalab" class="img-thumbnail col-1">
+        <div class="col-5"></div>
 
-	<video id="videooo" loop crossOrigin="anonymous" playsinline style="display:none" >
-	  <!--<source src="/video/vid.mov">-->
-	</video>
+        </div>
+
+        </div></div>
+        <!-- Modal body -->
+        <div class="modal-body  bg-dark text-light">
+        <h2 class="text-center">cursor para rotar.</h2>
+        <h2 class="text-center">zoom para desplazarte.</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 	
-</body>
-</html>
+	<div class="container-fluid m-0 p-0" id="threejs">
+<div class="jumbotron jumbotron-fluid m-0 p-0">
+  <div class="container h-100 m-0 p-0" id="scene">
+  </div>
+</div>
+</div>
+
+<div class="container-fluid fixed-top" id="nav">
+  <ul class="navbar nav bg-dark py-0">
+    <li class="nav-item ml-md-1">
+     <ul class="nav bg-dark">
+    <li class="nav-item ml-md-1">
+      <a class="nav-link text-white" href="#">
+	    <label class="badge" id="online_number"></label>Asistentes</a>
+    </li>
+    
+    <li class="nav-item ml-md-1">
+  <div class="dropdown">
+    <button type="button" class="btn cols-md-1 btn-dark dropdown-toggle text-white" data-toggle="dropdown" aria-expanded="false">
+Textura
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item active avatar-texture" href="#" texture="0"><img src="/img/avTex1.jpg" width="50px"></img></a>
+      <a class="dropdown-item avatar-texture" href="#" texture="1"><img src="/img/avTex2.jpg" width="50px"></img></a>
+      <a class="dropdown-item avatar-texture" href="#" texture="2"><img src="/img/avTex3.jpg" width="50px"></img></a>
+      <a class="dropdown-item avatar-texture" href="#" texture="3"><img src="/img/avTex4.jpg" width="50px"></img></a>
+    </div>
+  </div>
+    </li>
+    
+    
+    <li class="nav-item ml-md-1">
+ <div class="dropdown">
+    <button type="button" class="btn btn-dark dropdown-toggle text-white" data-toggle="dropdown" aria-expanded="false">
+Calidad
+    </button>
+    <div class="dropdown-menu" >
+      <a class="dropdown-item active quality" href="#" quality="1">100%</a>
+      <a class="dropdown-item quality" quality="0.75" href="#">75%</a>
+      <a class="dropdown-item quality" quality="0.5"href="#">50%</a>
+      <a class="dropdown-item quality" quality="0.25" href="#">25%</a>
+    </div>
+  </div>
+    </li>
+    
+      </ul>
+   </li>
+    
+      <li class="nav-item">
+        <ul class="nav bg-dark justify-content-end">
+    <li class="nav-item ml-md-1">
+      <div class="mr-auto">
+	      <div class="input-group input-group-sm mb-3 my-auto" id="nickname_form">
+		      <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" maxlength="30">
+		      <div class="input-group-append">
+			      <a class="input-group-text bg-dark text-white" id="inputGroup-sizing-sm">Renombrar</a>
+		      </div>
+</div>
+
+  </div>
+    </li>
+    
+  </ul>
+   </li>
+    
+  </ul>
+  
+
+</div>
+
+
+
+<div class="container-fluid fixed-bottom" id="chat">
+<div class="row ">  
+
+	<div class="col-md-9 blank" ></div>
+  <div class="col-md-2 bg-dark text-white chat-header" >
+    <h5 class="text-secondary p-2">chat <label for="nickname" class="badge text-wrap text-right" id="nickname"></label></h5>
+  </div>
+  <div class="col-md-1 bg-dark text-white chat-header">
+    <button type="button" class=" btn btn-secondary  m-2" >&#128469;</button>
+  </div>
+</div>
+
+<div class="row chat-body">
+	<div class="col-md-9 blank" ></div>
+<div class="col-md-3 bg-dark text-white pre-scrollable py-2 chat-msg">
+
+</div>
+</div>
+<div class="row chat-body chat-input">
+	<div class="col-md-9 blank" ></div>
+<div class="col-md-3 bg-dark text-white py-2">
+
+    <div class="form-group my-1">
+      <textarea class="form-control bg-dark text-white" rows="3" id="comment"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-secondary">Enviar</button>
+</div>
+</div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<script src="/dist/main.js" type="module"></script>
+
+</body></html>

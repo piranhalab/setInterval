@@ -9,7 +9,6 @@ export function retrieveData() {
     let params = {};
     // get params from local Storage
     let uuid = localStorage.getItem("uuid");
-    uuid = "testing";
     let nickname = localStorage.getItem("nickname");
     let props = localStorage.getItem("props");
     if (!uuid || uuid.length != 13) {
@@ -41,8 +40,10 @@ export function retrieveData() {
             props_url = {};
         }
     }
-    if (api)
+    if (api) {
         Environment.api = true;
+        uuid = "01800-api-666";
+    }
     props = props_url;
     localStorage.setItem("uuid", uuid);
     localStorage.setItem("nickname", nickname);

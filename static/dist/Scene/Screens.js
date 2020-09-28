@@ -4,7 +4,7 @@ export const addScreens = function (Scene) {
     let mat = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
     let Screen = new THREE.Mesh(geom, mat);
     Screen.position.y = 5;
-    // Scene.scene.add(Screen);
+    Scene.scene.add(Screen);
     window.addEventListener("startStream", function (event) {
         let id = event.detail.id;
         let vid = document.querySelector(`#${id}`).querySelector("video");

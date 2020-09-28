@@ -86,8 +86,7 @@ function checkRot(uuid, data) {
 }
 function checkProp(uuid, data) {
     if (!(Array.isArray(data) && data.length == 2) ||
-        !(typeof data[0] === "string") ||
-        !(typeof data[1] === "string"))
+        !(typeof data[0] === "string"))
         return false;
     let prop = data[0];
     let value = data[1];
@@ -126,11 +125,11 @@ io.on('connection', function (conn) {
     conn.join(room);
     console.info(`User '${nickname}' (${uuid}) enter.`);
     // tell everyone on its own that user camed
-    io.to(room).emit("add", [uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room]);
+    io.to(room).emit("add", [uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room, JSON.stringify(Users_1.Users[uuid].props)]);
     // tell everyone on other side that user camed
     io.of('/').adapter.customRequest([
         'add',
-        [uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room]
+        [uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room, JSON.stringify(Users_1.Users[uuid].props)]
     ], function (err, replies) {
         replies.forEach(function (reply) {
             if (reply == null)
@@ -154,7 +153,8 @@ io.on('connection', function (conn) {
                 user.rot.x,
                 user.rot.y,
                 user.rot.z,
-                user.room
+                user.room,
+                JSON.stringify(user.props)
             ]);
         }
     });
@@ -187,9 +187,9 @@ io.on('connection', function (conn) {
         let res = checkProp(uuid, data);
         if (!res)
             return;
-        console.debug("res change", res);
         let { prop, value } = res;
         Users_1.Users[uuid].props[prop] = value;
+        console.debug(Users_1.Users[uuid].props);
         io.to(room).emit("change", [uuid, prop, value]);
     });
     conn.on('chat', function (data) {
@@ -222,6 +222,7 @@ io.of('/').adapter.customHook = function (data, cb) {
                         Users_1.Users[uuid].rot.y,
                         Users_1.Users[uuid].rot.z,
                         Users_1.Users[uuid].room,
+                        JSON.stringify(Users_1.Users[uuid].props)
                     ];
                 });
                 cb(users);

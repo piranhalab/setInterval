@@ -25,7 +25,9 @@ class User {
         this.rot = rot;
         this.room = room;
         this.props = {
-            avatar: 0
+            avatar: 0,
+            mesh: 0,
+            bg: 0
         };
         this.conn = conn;
     }

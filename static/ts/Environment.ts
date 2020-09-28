@@ -20,7 +20,6 @@ export function retrieveData(){
 
 	// get params from local Storage
 	let uuid:string|null = localStorage.getItem("uuid")
-	uuid = "testing"
 	let nickname:string|null = localStorage.getItem("nickname")
 	let props:string|null|any = localStorage.getItem("props")
 
@@ -56,8 +55,10 @@ export function retrieveData(){
 			props_url = {}
 		}
 	}
-	if(api) Environment.api = true
-
+	if(api){
+		Environment.api = true
+		uuid = "01800-api-666"
+	}
 	props = props_url
 
 	localStorage.setItem("uuid", uuid)

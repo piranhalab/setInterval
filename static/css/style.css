@@ -1,0 +1,21 @@
+body{
+	margin: 0; 
+	background: rgb(238,174,202);
+	background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,189,233,1) 100%); 
+}
+
+#scene,#threejs, .jumbotron{
+	background: transparent !important;
+}
+
+#chat{
+	z-index:0;
+}
+
+.dropdown-menu{
+	min-width:inherit;
+}
+
+.chat-body{
+	opacity:0.8;
+}

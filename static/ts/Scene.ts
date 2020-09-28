@@ -22,10 +22,10 @@ export interface Scene {
 export const Scene:Scene = {
 	scene: new THREE.Scene(),
 	camera: new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ),
-	renderer: new THREE.WebGLRenderer(),
+	renderer: new THREE.WebGLRenderer({antialias:true, alpha: true}),
 	init: function(){
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
-		document.body.appendChild( this.renderer.domElement );
+		document.querySelector("#scene").appendChild( this.renderer.domElement );
 		
 		this.controls = Controls.init(this)
 		this.avatar = Avatar.init(this)
@@ -47,6 +47,20 @@ window.addEventListener( 'resize', function onWindowResize(){
 
     Scene.renderer.setSize( window.innerWidth, window.innerHeight );
 },false)
+
+document.querySelectorAll(".quality").forEach(function(qual_item){
+	qual_item.addEventListener("click",function(event){
+		let selection = (event.target as HTMLElement)
+		let quality = parseFloat(selection.getAttribute("quality"))
+
+		document.querySelectorAll(".quality").forEach(function(qual){
+			qual.classList.remove("active")
+		})
+
+		selection.classList.add("active")
+		Scene.renderer.setPixelRatio(quality)
+	})
+})
 
 window.Scene = Scene
 window.THREE = THREE

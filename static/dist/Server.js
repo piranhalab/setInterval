@@ -1,6 +1,6 @@
 import { User, Users } from "./Users.js";
 import { Environment, retrieveData } from "./Environment.js";
-import { check, checkName, checkPos, checkRot, checkProp, checkChat } from "./Validation.js";
+import { check, checkName, checkPos, checkRot, checkProp, checkChatdata } from "./Validation.js";
 import { API } from "./API.js";
 export const Server = {
     socket: null,
@@ -17,7 +17,13 @@ export const Server = {
             rot: rot,
             room: room
         });
-        const socket = io("http://172.20.10.2:3000", { query: `uuid=${user.uuid}&room=${user.room}&nickname=${user.nickname}&pos=${JSON.stringify(user.pos)}&rot=${JSON.stringify(user.rot)}` });
+        const socket = io("http://127.0.0.1:3000", {
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            reconnectionAttempts: 99999,
+            query: `uuid=${user.uuid}&room=${user.room}&nickname=${user.nickname}&pos=${JSON.stringify(user.pos)}&rot=${JSON.stringify(user.rot)}`
+        });
         Users.me = user;
         socket.on("connect", function (conn) {
             Server.socket = socket;
@@ -26,14 +32,15 @@ export const Server = {
                 let res = check(data);
                 if (!res)
                     return;
-                let { room, pos, rot, nickname, uuid } = res;
+                let { room, pos, rot, nickname, uuid, props } = res;
                 if (!Users.hasOwnProperty(uuid) && Users.me.uuid != uuid) {
                     let user = new User({
                         uuid: uuid,
                         nickname: nickname,
                         pos: pos,
                         rot: rot,
-                        room: room
+                        room: room,
+                        props: props
                     });
                     Users[uuid] = user;
                     dispatchEvent(user.add);
@@ -77,15 +84,17 @@ export const Server = {
                 if (!res)
                     return;
                 let { uuid, prop, value } = res;
-                Users[uuid].change.detail.prop = prop;
-                Users[uuid].change.detail.value = value;
-                Users[uuid].props[prop] = value;
-                dispatchEvent(Users[uuid].change);
+                if (Users.me.uuid != uuid) {
+                    Users[uuid].change.detail.prop = prop;
+                    Users[uuid].change.detail.value = value;
+                    Users[uuid].props[prop] = value;
+                    dispatchEvent(Users[uuid].change);
+                }
             });
             socket.on("chat", function (data) {
-                let res = checkChat(data);
+                let res = checkChatdata(data);
                 if (!res)
-                    return;
+                    return false;
                 let { uuid, msg } = res;
                 let chatEvent = new CustomEvent("chat", {
                     detail: {
@@ -98,13 +107,12 @@ export const Server = {
             socket.on('api', function (data) {
                 if (!Environment.api)
                     return;
-                console.debug("asdfasdfsdf ", data);
                 if (API[data[0]]) {
                     API[data[0]](data.slice(1));
                 }
             });
             socket.on('disconnect', function () {
-                Server.socket.socket.reconnect();
+                console.info("disconnected, retrying...");
             });
         });
     },
@@ -144,7 +152,6 @@ window.addEventListener("changeUser", function (event) {
 window.addEventListener("chat", function (event) {
     const uuid = event.detail.uuid;
     let msg = event.detail.msg;
-    console.debug("asfsdf", "eventochat");
     if (uuid == "me" && Server.socket) {
         Server.socket.emit("chat", msg);
     }
