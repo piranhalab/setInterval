@@ -1,6 +1,7 @@
 import { User, Users } from "./Users.js";
 import { Environment, retrieveData } from "./Environment.js";
 import { check, checkName, checkPos, checkRot, checkProp, checkChat } from "./Validation.js";
+import { API } from "./API.js";
 export const Server = {
     socket: null,
     reconnect: true,
@@ -82,9 +83,7 @@ export const Server = {
                 dispatchEvent(Users[uuid].change);
             });
             socket.on("chat", function (data) {
-                console.debug("CHAT", data);
                 let res = checkChat(data);
-                console.debug("CHAT", res);
                 if (!res)
                     return;
                 let { uuid, msg } = res;
@@ -95,6 +94,14 @@ export const Server = {
                     }
                 });
                 dispatchEvent(chatEvent);
+            });
+            socket.on('api', function (data) {
+                if (!Environment.api)
+                    return;
+                console.debug("asdfasdfsdf ", data);
+                if (API[data[0]]) {
+                    API[data[0]](data.slice(1));
+                }
             });
             socket.on('disconnect', function () {
                 Server.socket.socket.reconnect();
