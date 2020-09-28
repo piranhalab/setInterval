@@ -1,4 +1,6 @@
 import * as THREE from "../three/build/three.module.js";
+import { GLTFLoader } from '/js/three/examples/jsm/loaders/GLTFLoader.js';
+
 export const addCube = function (Scene) {
 
     /*
@@ -30,7 +32,6 @@ export const addCube = function (Scene) {
     light3.position.z =440;
     light4.position.z =-440;
 
-    
     Scene.scene.add(light1);
     Scene.scene.add(light2);
     Scene.scene.add(light3);
@@ -52,10 +53,11 @@ export const addCube = function (Scene) {
     var geometry = new THREE.BufferGeometry();
     // var geometry = new THREE.Geometry();
 
-    let moveS = 8;
-	
+    let moveS = 2;
+
+  
     for(var x = -6.0; x <= 6.0; x = x + 0.05){
-	for(var y = -moveS; y <= moveS; y = y + 0.75){
+	for(var y = -moveS; y <= moveS; y = y + 1){
 	    var equis = x * Math.cos(y) * 2;
 	    var ye = x * Math.sin(y) * 2;
 	    var zeta = y * Math.cos(x) * 2;
@@ -64,7 +66,11 @@ export const addCube = function (Scene) {
 	    // normals.push( 0, 0, 1 );
 
 	}
-    }
+
+    
+	}
+   
+
 
 /*
     for ( var i = 0; i < segments; i ++ ) {
@@ -94,16 +100,16 @@ export const addCube = function (Scene) {
 
     // geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
 
-    // geometry.computeBoundingSphere();
-    // geometry.computeVertexNormals(); // computed vertex normals are orthogonal to the face for non-indexed BufferGeometry
+    geometry.computeBoundingSphere();
+    geometry.computeVertexNormals(); // computed vertex normals are orthogonal to the face for non-indexed BufferGeometry
 
     
     //let mat = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
     // var mat = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 
-    //var video = document.getElementById( 'videooo' );
+    var video = document.getElementById( 'videooo' );
 
-    // let texture = new THREE.VideoTexture( video );
+    let texture = new THREE.VideoTexture( video );
 
     // video.play();
     
@@ -114,11 +120,11 @@ export const addCube = function (Scene) {
     // texture.repeat.set( 0.25, 0.5 ); // 4x4 si se ve pixeleado
    
     let mat = new THREE.MeshBasicMaterial( {
-	color: 0xffffff,
+	 color: 0xffffff,
 	//metalness: 0.8,
-	// roughness: 0.8,
+	//roughness: 0.8,
 	side: THREE.DoubleSide, 
-  //	 map: texture
+  	// map: texture
         //transparent: true,
         //opacity: 0.75,
     });
@@ -128,13 +134,19 @@ export const addCube = function (Scene) {
     let Cube = new THREE.Mesh(geometry, mat);
     window.Cube = Cube; 
 
+   
     window.addEventListener("startStream", function (event) {
+
 	let id = event.detail.id;
-        let vid = document.querySelector(`#${id}`).querySelector("video");
+        let vid = document.querySelector(`#${id}`);
         let map = new THREE.VideoTexture(vid);
+	Console.debug("holaaaaa", vid);
         Cube.material.map = map;
         Cube.material.needsUpdate = true;
+	video.play();
+
     });
+  
     
     Cube.geometry.verticesNeedUpdate = true;
     Cube.geometry.normalsNeedUpdate = true;
@@ -150,7 +162,8 @@ export const addCube = function (Scene) {
     //var materialP = new THREE.MeshBasicMaterial( {color: 0xffff00, map: texture, side: THREE.DoubleSide} );
     //var planeP = new THREE.Mesh( geometryP, materialP );
     //Scene.scene.add( planeP );
-        
+
+    
     rotate(Cube);
     return Cube;
     // screw(geometry);
@@ -162,8 +175,42 @@ function rotate(cube) {
     
     let moveS = 2.0; 
     let moveX = 0.0;
+    var mixer; 
+
+    let loader = new GLTFLoader();
+    loader.load(
+	// resource URL
+	'/3d/mod3.gltf',
+	// called when the resource is loadedi
+	function ( gltf ) {
+
+	    let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, metalness: 0.8, roughness: 0.9, side: THREE.DoubleSide } );
+	    //mat.castShadow = true
+	    // gltf.scene.children[0].material = mat
+// 	    console.log(gltf.animations); 
+
+	    
+	    let fuente = gltf.scene
+	    Window.fuente = fuente;
+
+	    fuente.scale.multiplyScalar(100)
+	    //fuente.material = mat; 
+	    
+	    fuente.position.set(0, 10, 100)
+
+	    Scene.scene.add(fuente)
+	    Scene.fuente = fuente
+
+	    var animations = gltf.animations;
+
+	    mixer = new THREE.AnimationMixer( fuente );
+	    
+	    var action = mixer.clipAction( animations[ 0 ] );
+	    action.play(); 
+	})
 
 
+    
  var listener = new THREE.AudioListener();
     Scene.camera.add( listener );
     
@@ -172,6 +219,9 @@ function rotate(cube) {
     
     // load a sound and set it as the Audio object's buffer
     var audioLoader = new THREE.AudioLoader();
+
+    
+    // audioLoader.load( '/snd/track.ogg', function( buffer ) {
     audioLoader.load( '/snd/track.ogg', function( buffer ) {
 	audio.setBuffer( buffer );
 	audio.setLoop( true );
@@ -182,7 +232,9 @@ function rotate(cube) {
     let fftSize = 2048 /2;
     //let fftSize = 32; 
     let analyser = new THREE.AudioAnalyser( audio, fftSize );
-      
+    var clock; 
+    clock = new THREE.Clock();
+
     
     function loop() {
 	let vertices = [];
@@ -198,8 +250,11 @@ function rotate(cube) {
 	cube.geometry.normalsNeedUpdate = true;
     
 	var time = Date.now() * 0.0005;
+	var mixerUpdateDelta = clock.getDelta();
 
-        cube.rotation.z +=  0.0025;
+	mixer.update(mixerUpdateDelta);
+	
+        cube.rotation.z +=  0.001;
 	//cube.rotation.y += 0.001;
 	//cube.rotation.x += -0.001;
 
@@ -246,37 +301,40 @@ function rotate(cube) {
 
 	// TriaxialTritorus
 
-	/*
 	for(var x = -6; x <= 6; x = x + 0.05){
-	    for(var y = -3; y <= 3; y = y + 0.75){
+	    for(var y = -2; y <= 2; y = y + 0.5){
 
-		var equis = Math.sin(x) * (1+Math.cos(y)) * 100;
-		var ye = Math.sin(x + (Math.PI*2) /3) * (1 + Math.cos(y+(Math.PI *2)/3)) * 100;
-		var zeta = Math.sin(x+2*(Math.PI * 2)/3) * (1 + Math.cos(y+(2*Math.PI*2) / 3 )) * 100;
- 		vertices.push(equis*(1+data[loc%512]/256), ye*(1+data[loc%512]/256), zeta*(1+data[loc%512]/256));
+		var equis = Math.sin(x) * (1+Math.cos(y)) * 175;
+		var ye = Math.sin(x + (Math.PI*2) /3) * (1 + Math.cos(y+(Math.PI *2)/3)) * 175;
+		var zeta = Math.sin(x+2*(Math.PI * 2)/3) * (1 + Math.cos(y+(2*Math.PI*2) / 3 )) * 175;
+ 		vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
 		// vertices.push(equis, ye, zeta);
 		// normals.push(equis, ye, zeta);
 		normals.push( 0, 0, 1 );
 		loc++;
 	    }
 	}
-	*/
+
 
 	// MaedersOwl
-	
+
+	/*
 	for(var x = -6; x <= 6; x = x + 0.075){
 	    for(var y = -3; y <= 3; y = y + 1){
 
 		var equis = (y * Math.cos(x) * Math.pow(y, 2) * Math.cos(2 * x)) * 10;
 		var ye = (-y * Math.sin(x) * Math.pow(y, 2) * Math.sin (2 * x)) * 10;
 		var zeta = (4* Math.pow(y, 1.5) * Math.cos(3* x /2) / 3) * 10;
- 		vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
-		//  vertices.push(equis, ye, zeta);
+ 		vertices.push(equis * ( 1 + data[loc%512]/128 ), ye * ( 1 + data[loc%512]/128), zeta * ( 1 + data[loc%512]/128 ));
+		// vertices.push(equis, ye, zeta);
 		// normals.push(equis, ye, zeta);
-		normals.push( 0, 0, 1 );
+		normals.push( 0, 0, 1);
+		// normals.push(x, y);
+	
 		loc++;
 	    }
 	}
+	*/
 
 /*	
 
@@ -307,7 +365,7 @@ function rotate(cube) {
 	// geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
 	
 	cube.geometry.computeBoundingSphere();
-	cube.geometry.computeVertexNormals(); // computed vertex normals are orthogonal to the face for non-indexed BufferGeometry
+	// cube.geometry.computeVertexNormals(); // computed vertex normals are orthogonal to the face for non-indexed BufferGeometry
 	
 	
 
@@ -332,6 +390,6 @@ function rotate(cube) {
         // requestAnimationFrame(loop);
     }
     //loop();
-    setInterval(loop, 13)
+    setInterval(loop, 30)
 }
 
