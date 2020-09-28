@@ -7,7 +7,9 @@ import { addScreens } from "./Scene/Screens.js";
 export const Scene = {
     scene: new THREE.Scene(),
     camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
-    renderer: new THREE.WebGLRenderer(),
+    renderer: new THREE.WebGLRenderer( { antialias: true } ),
+//   var renderer = new THREE.WebGLRenderer( { antialias: true } );
+
     init: function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);

@@ -2,16 +2,30 @@ export const Streaming = {
     init: function () {
         let streamingCont = document.createElement('div');
 
-	//streamingCont.style.display = "block";
-	streamingCont.style.position = "absolute";
-	streamingCont.style.top = "0%";
-	streamingCont.style.zIndex = "-2"; 
+	// let streamingCont = document.createElement('div');
+        streamingCont.style.display = "none";
         streamingCont.id = "streaming-main";
 
-
+	//streamingCont.style.display = "block";
+	//streamingCont.style.position = "absolute";
+	//streamingCont.style.top = "0%";
+	//streamingCont.style.zIndex = "-2"; 
+        //streamingCont.id = "streaming-main";
 	
         document.body.appendChild(streamingCont);
         //const videoSrc = "http://127.0.0.1:8000/live/test/index.m3u8";
+
+	    if (flvjs.isSupported()) {
+		var videoElement = document.getElementById('videooo');
+		var flvPlayer = flvjs.createPlayer({
+		    type: 'flv',
+		    url: 'http://157.245.123.52/live?port=1935&app=selma_trans&stream=app'
+		});
+		flvPlayer.attachMediaElement(videoElement);
+		flvPlayer.load();
+		flvPlayer.play();
+	    }
+	/*	
         const videoSrc = "http://198.211.106.132:8000/live/test/index.m3u8";
         let player = new Clappr.Player({
             source: videoSrc,
@@ -28,6 +42,8 @@ export const Streaming = {
                 }
             }
         });
+	*/
+ 
         /*
             
         if (p2pml.hlsjs.Engine.isSupported()) {
@@ -43,16 +59,16 @@ export const Streaming = {
         }
          */
         function retry() {
-            player.configure(player.options);
-            player.play();
+         //   player.configure(player.options);
+         //   player.play();
         }
-        window.player = player;
-        player.attachTo(streamingCont);
+       //window.player = player;
+       // player.attachTo(streamingCont);
 	let comoSea = streamingCont.querySelector("video");
-	comoSea.style.display = "none";
-        window.document.body.addEventListener("click", function () {
-            player.play();
-        });
+	// comoSea.style.display = "none";
+       //window.document.body.addEventListener("click", function () {
+       //     player.play();
+       // });
     },
-    startStreaming: new CustomEvent("startStream", { detail: { id: "streaming-main" } })
+    startStreaming: new CustomEvent("startStream", { detail: { id: "videooo" } })
 };
