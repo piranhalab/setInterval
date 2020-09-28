@@ -1,20 +1,21 @@
 import * as THREE from "../three/build/three.module.js";
 import { GLTFLoader } from '/js/three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from '/js/three/examples/jsm/loaders/DRACOLoader.js';
 
 export const addCube = function (Scene) {
 
-    /*
-    var light1 = new THREE.PointLight( 0xb9d8e4, 1, 1450 );
-    var light2 = new THREE.PointLight( 0xa450e0, 1, 1450 );
-    var light3 = new THREE.PointLight( 0xe050d4, 1, 1450 );
-    var light4 = new THREE.PointLight( 0xe0508c, 1, 1450 );
-    */
-    
+   
+    var light1 = new THREE.PointLight( 0xb9d8e4, 0.25, 1450 );
+    var light2 = new THREE.PointLight( 0xa450e0, 0.25, 1450 );
+    var light3 = new THREE.PointLight( 0xe050d4, 0.25, 1450 );
+    var light4 = new THREE.PointLight( 0xe0508c, 0.25, 1450 );
+
+/*    
     var light1 = new THREE.PointLight( 0xffffff, 1, 1450 );
     var light2 = new THREE.PointLight( 0xffffff, 1, 1450 );
     var light3 = new THREE.PointLight( 0xffffff, 1, 1450 );
     var light4 = new THREE.PointLight( 0xffffff, 1, 1450 );
-
+*/ 
     
     light1.position.y =30;
     light2.position.y =30;
@@ -37,26 +38,18 @@ export const addCube = function (Scene) {
     Scene.scene.add(light3);
     Scene.scene.add(light4);
     
-    /*
-    let geom = new THREE.PlaneGeometry(24, 24, 50, 50);
-
-    for (let i = 0; i < geom.vertices.length; i++) {
-	geom.vertices[i].y += (Math.random()*6)-3;
-    }
-    */
-
     let vertices = [];
     let normals = [];
-    let segments = 18;
+    let segments = 8;
     let indices = [];
 
     var geometry = new THREE.BufferGeometry();
     // var geometry = new THREE.Geometry();
 
-    let moveS = 2;
+    let moveS = 8;
 
   
-    for(var x = -6.0; x <= 6.0; x = x + 0.05){
+    for(var x = -8.0; x <= 8.0; x = x + 0.05){
 	for(var y = -moveS; y <= moveS; y = y + 1){
 	    var equis = x * Math.cos(y) * 2;
 	    var ye = x * Math.sin(y) * 2;
@@ -64,37 +57,10 @@ export const addCube = function (Scene) {
 	    vertices.push(equis, ye, zeta);
 	    normals.push(x, y);
 	    // normals.push( 0, 0, 1 );
-
 	}
-
-    
-	}
-   
-
-
-/*
-    for ( var i = 0; i < segments; i ++ ) {
-	
-	for ( var j = 0; j < segments; j ++ ) {
-	    
-	    var a = i * ( segments + 1 ) + ( j + 1 );
-	    var b = i * ( segments + 1 ) + j;
-	    var c = ( i + 1 ) * ( segments + 1 ) + j;
-	    var d = ( i + 1 ) * ( segments + 1 ) + ( j + 1 );
-	    
-	    // generate two faces (triangles) per iteration
-	    
-	    indices.push( a, b, d ); // face one
-	    indices.push( b, c, d ); // face two
-
-	}
-	
     }
-  */  
-    // geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
 
-    //geometry.setIndex( indices );
-// itemSize = 3 because there are 3 values (components) per vertex
+   
     geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
     geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( normals, 2 ) );
 
@@ -119,12 +85,12 @@ export const addCube = function (Scene) {
     //texture.wrapT = THREE.MirrorRepeatWrapping;
     // texture.repeat.set( 0.25, 0.5 ); // 4x4 si se ve pixeleado
    
-    let mat = new THREE.MeshBasicMaterial( {
-	 color: 0xffffff,
-	//metalness: 0.8,
-	//roughness: 0.8,
-	side: THREE.DoubleSide, 
-  	// map: texture
+    let mat = new THREE.MeshStandardMaterial( {
+// 	 color: 0xffffff,
+	 metalness: 0.8,
+	 roughness: 0.5,
+	 side: THREE.DoubleSide, 
+  	// map: texture                     
         //transparent: true,
         //opacity: 0.75,
     });
@@ -134,19 +100,19 @@ export const addCube = function (Scene) {
     let Cube = new THREE.Mesh(geometry, mat);
     window.Cube = Cube; 
 
-   
+    /*
     window.addEventListener("startStream", function (event) {
 
 	let id = event.detail.id;
         let vid = document.querySelector(`#${id}`);
         let map = new THREE.VideoTexture(vid);
-	Console.debug("holaaaaa", vid);
+	// Console.debug("holaaaaa", vid);
         Cube.material.map = map;
         Cube.material.needsUpdate = true;
 	video.play();
 
     });
-  
+  */ 
     
     Cube.geometry.verticesNeedUpdate = true;
     Cube.geometry.normalsNeedUpdate = true;
@@ -173,30 +139,48 @@ export const addCube = function (Scene) {
 
 function rotate(cube) {
     
-    let moveS = 2.0; 
+    let moveS = 0.0; 
     let moveX = 0.0;
     var mixer; 
 
     let loader = new GLTFLoader();
+
+    var dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath( '/js/three/examples/js/libs/draco/' );
+    loader.setDRACOLoader( dracoLoader );
+    
     loader.load(
 	// resource URL
-	'/3d/mod3.gltf',
+	'/3d/model.glb',
 	// called when the resource is loadedi
 	function ( gltf ) {
 
-	    let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, metalness: 0.8, roughness: 0.9, side: THREE.DoubleSide } );
+	    // let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, metalness: 0.8, roughness: 0.9, side: THREE.DoubleSide } );
 	    //mat.castShadow = true
 	    // gltf.scene.children[0].material = mat
 // 	    console.log(gltf.animations); 
 
+	    /*
+	    var mat = new THREE.MeshStandardMaterial( {
+		color: 0xffffff,
+		metalness: 0.7,
+		roughness: 0.15,
+		// transparent: true,
+		//opacity: 0.7, 
+		// map: vueltasTexture,
+				// side: THREE.DoubleSide
+	    } );
+	    mat.castShadow = true
+	    gltf.scene.material = mat
+	    */
 	    
 	    let fuente = gltf.scene
 	    Window.fuente = fuente;
 
-	    fuente.scale.multiplyScalar(100)
+	    fuente.scale.multiplyScalar(20)
 	    //fuente.material = mat; 
 	    
-	    fuente.position.set(0, 10, 100)
+	    fuente.position.set(0, 10, 40)
 
 	    Scene.scene.add(fuente)
 	    Scene.fuente = fuente
@@ -226,7 +210,7 @@ function rotate(cube) {
 	audio.setBuffer( buffer );
 	audio.setLoop( true );
 	audio.setVolume( 0.5 );
-	audio.play();
+	// audio.play();
     });
     
     let fftSize = 2048 /2;
@@ -278,20 +262,42 @@ function rotate(cube) {
 
 */	
 
+	
+ /*
+    for ( var i = 0; i < segments; i ++ ) {
+	
+	for ( var j = 0; j < segments; j ++ ) {
+	    
+	    var a = i * ( segments + 1 ) + ( j + 1 );
+	    var b = i * ( segments + 1 ) + j;
+	    var c = ( i + 1 ) * ( segments + 1 ) + j;
+	    var d = ( i + 1 ) * ( segments + 1 ) + ( j + 1 );
+	    
+	    // generate two faces (triangles) per iteration
+	    
+	    indices.push( a, b, d ); // face one
+	    indices.push( b, c, d ); // face two
+
+	}
+	
+    }
+   
+    
+     Cube.geometry.setIndex( indices );   
+*/ 	
 	// let moveS = 4;
 	var loc=0; 
 
 	// STEINBACH SCREW
-	
 	/*
-	for(var x = -moveS; x <= moveS; x = x + 0.05){
-	    for(var y = -5; y <= 5; y = y + 0.8){
+	for(var x = -2; x <= 2; x = x + 0.05){
+	    for(var y = -3; y <= 3; y = y + 0.8){
 
-		var equis = x * Math.cos(y) * 10;
-		var ye = x * Math.sin(y) *10;
-		var zeta = y * Math.cos(x) * 10;
-		//vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
-		 vertices.push(equis, ye, zeta);
+		var equis = x * Math.cos(y) * 50;
+		var ye = x * Math.sin(y) *50;
+		var zeta = y * Math.cos(x) * 50;
+		vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
+		// vertices.push(equis, ye, zeta);
 		// normals.push(equis, ye, zeta);
 		normals.push( 0, 0, 1 );
 		loc++;
@@ -301,14 +307,15 @@ function rotate(cube) {
 
 	// TriaxialTritorus
 
-	for(var x = -6; x <= 6; x = x + 0.05){
-	    for(var y = -2; y <= 2; y = y + 0.5){
 
-		var equis = Math.sin(x) * (1+Math.cos(y)) * 175;
-		var ye = Math.sin(x + (Math.PI*2) /3) * (1 + Math.cos(y+(Math.PI *2)/3)) * 175;
-		var zeta = Math.sin(x+2*(Math.PI * 2)/3) * (1 + Math.cos(y+(2*Math.PI*2) / 3 )) * 175;
- 		vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
-		// vertices.push(equis, ye, zeta);
+	for(var x = -moveS; x <= moveS; x = x + 0.075){
+	    for(var y = -3; y <= 3; y = y + 0.5){
+
+		var equis = Math.sin(x) * (1+Math.cos(y)) * 50;
+		var ye = Math.sin(x + (Math.PI*2) /3) * (1 + Math.cos(y+(Math.PI *2)/3)) * 75;
+		var zeta = Math.sin(x+2*(Math.PI * 2)/3) * (1 + Math.cos(y+(2*Math.PI*2) / 3 )) * 75;
+ 		// vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
+		vertices.push(equis, ye, zeta);
 		// normals.push(equis, ye, zeta);
 		normals.push( 0, 0, 1 );
 		loc++;
@@ -318,9 +325,10 @@ function rotate(cube) {
 
 	// MaedersOwl
 
-	/*
-	for(var x = -6; x <= 6; x = x + 0.075){
-	    for(var y = -3; y <= 3; y = y + 1){
+/*
+
+	for(var x = -6; x <= 6; x = x + 0.05){
+	    for(var y = -3; y <= 3; y = y + 0.5){
 
 		var equis = (y * Math.cos(x) * Math.pow(y, 2) * Math.cos(2 * x)) * 10;
 		var ye = (-y * Math.sin(x) * Math.pow(y, 2) * Math.sin (2 * x)) * 10;
@@ -334,7 +342,8 @@ function rotate(cube) {
 		loc++;
 	    }
 	}
-	*/
+
+*/
 
 /*	
 
@@ -364,15 +373,15 @@ function rotate(cube) {
 	
 	// geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
 	
-	cube.geometry.computeBoundingSphere();
-	// cube.geometry.computeVertexNormals(); // computed vertex normals are orthogonal to the face for non-indexed BufferGeometry
+	// cube.geometry.computeBoundingSphere();
+	cube.geometry.computeVertexNormals(); // computed vertex normals are orthogonal to the face for non-indexed BufferGeometry
 	
 	
 
 	moveS+=0.001;
 
-	if(moveS >= 12){
-	    moveS = 4; 
+	if(moveS >= 18){
+	    moveS = 0; 
 	}
 // 	console.log(moveS); 
 	

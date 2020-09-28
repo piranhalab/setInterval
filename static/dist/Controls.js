@@ -2,6 +2,7 @@ import { PointerLockControls } from './three/examples/jsm/controls/PointerLockCo
 import * as THREE from './three/build/three.module.js';
 import { Environment } from "./Environment.js";
 import { Users } from "./Users.js";
+import { Streaming } from "./Streaming.js";
 export const Controls = {
     init: function (Scene) {
         let initialPos = Environment.initialPos;
@@ -75,6 +76,8 @@ export const Controls = {
         });
         document.addEventListener("click", function (e) {
             Controls.controls.lock();
+	    dispatchEvent(Streaming.startStreaming);
+	    
         });
         window.addEventListener("addUser", function (event) {
             let uuid = event.detail.uuid;
