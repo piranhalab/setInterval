@@ -119,7 +119,7 @@ function checkProp(uuid, data){
 
 function checkChat(data){
         if(
-		!(typeof data === "string" && data[0].length > 0 && data[0].length < 280) 
+		!(typeof data === "string" && data.length > 0 && data.length < 280) 
         ) return false
 
         let msg = data
@@ -160,6 +160,7 @@ io.on('connection', function(conn:any) {
 			[uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room]
 		], function(err, replies){
 			replies.forEach(function(reply){
+				if(reply == null) return
 				reply.forEach(function(data){
 					// tell everyone on its own of other nodes
 					conn.emit("add",data)
