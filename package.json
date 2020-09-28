@@ -20,6 +20,7 @@
     "hls.js": "^0.14.10",
     "p2p-media-loader-core": "^0.6.2",
     "p2p-media-loader-hlsjs": "^0.6.2",
+    "package.json": "^2.0.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "socket.io-redis": "^5.3.0",
