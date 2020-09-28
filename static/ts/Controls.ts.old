@@ -1,4 +1,4 @@
-import { OrbitControls } from './three/examples/jsm/controls/OrbitControls.js';
+import {PointerLockControls} from './three/examples/jsm/controls/PointerLockControls.js';
 import * as THREE from './three/build/three.module.js';
 import {Environment} from "./Environment.js"
 import {Users} from "./Users.js"
@@ -27,28 +27,12 @@ export const Controls: Controls = {
 
 		Scene.camera.position.set(initialPos.x, initialPos.y, initialPos.z )
 		Scene.camera.rotation.set(initialRot.x, initialRot.y, initialRot.z )
-		
-		this.controls = new OrbitControls( Scene.camera, Scene.renderer.domElement );
 
-		this.orbit = function (){
-			Controls.controls.update()
-			requestAnimationFrame(Controls.orbit)
-		}
-		requestAnimationFrame(this.orbit)
-		setInterval(function(){
-			Users.me.pos = {
-				x: Scene.camera.position.x,
-				y: Scene.camera.position.y,
-				z: Scene.camera.position.z,
-			}
-		},100)
-/*
 		if(detectMob()) {
 			this.addMobile(Scene)
 		}else{
 			this.addDesk(Scene)
 		}
-	       */
 		return this
 	},
 	addDesk: function(Scene){

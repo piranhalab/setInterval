@@ -5,7 +5,7 @@ interface Avatar{
 	init: Function
 	avatar?: THREE.Group
 	font?:any
-	texures?: THREE.TextureLoader[]
+	textures?: THREE.TextureLoader[]
 	addTextures: Function
 	offsetY:number
 	offsetNicknameY:number
@@ -229,9 +229,29 @@ export const Avatar:Avatar = {
 			
 		})
 		
+		document.querySelectorAll(".avatar-texture").forEach(function(texture_item){
+			texture_item.addEventListener("click", function(event){
+				let selection = (event.target as HTMLElement)
+				
+				document.querySelectorAll(".avatar-texture").forEach(function(txt){
+					txt.classList.remove("active")
+				})
+				
+				if(selection.tagName == "IMG"){
+					selection = selection.parentElement
+				}
+
+				selection.classList.add("active")
+				let texture = Avatar.textures[parseInt(selection.getAttribute("texture"))]
+
+				let avt = Avatar.avatars["me"]
+
+				avt.children[0].material.map = texture
+
+			})
+		})
 	},
 	offsetY:-14,
 	offsetNicknameY:20,
 }
-
 

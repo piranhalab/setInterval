@@ -1,16 +1,44 @@
 export const Streaming = {
     init: function () {
-
-	    if (flvjs.isSupported()) {
-		var videoElement = document.getElementById('videooo');
-		var flvPlayer = flvjs.createPlayer({
-		    type: 'flv',
-		    url: 'http://157.245.123.52/live?port=1935&app=selma_trans&stream=app'
-		});
-		flvPlayer.attachMediaElement(videoElement);
-		flvPlayer.load();
-		// flvPlayer.play();
-	    }
+        let streamingCont = document.createElement('div');
+        streamingCont.style.display = "none";
+        streamingCont.id = "streaming-main";
+        document.body.appendChild(streamingCont);
+        const videoSrc = "http://127.0.0.1:8000/live/test/index.m3u8";
+        let player = new Clappr.Player({
+            source: videoSrc,
+            mute: false,
+            autoPlay: false,
+            disableErrorScreen: true,
+            events: {
+                onError: function (e) {
+                    window.setTimeout(() => retry(), 500);
+                },
+                onPlay: function (e) {
+                    Streaming.startStreaming.detail.id = "streaming-main";
+                    dispatchEvent(Streaming.startStreaming);
+                }
+            }
+        });
+        if (p2pml.hlsjs.Engine.isSupported()) {
+            let engine = new p2pml.hlsjs.Engine();
+            p2pml.hlsjs.initClapprPlayer(player);
+            player.options.playback = {
+                hlsjsConfig: {
+                    liveSyncDurationCount: 7,
+                    loader: engine.createLoaderClass()
+                }
+            };
+        }
+        function retry() {
+            player.configure(player.options);
+            player.play();
+        }
+        window.player = player;
+        player.attachTo(streamingCont);
+        window.document.body.addEventListener("click", function () {
+            player.play();
+        });
     },
-    startStreaming: new CustomEvent("startStream", { detail: { id: "videooo" } })
+    startStreaming: new CustomEvent("startStream", { detail: { id: "streaming-main" } })
 };

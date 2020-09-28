@@ -101,8 +101,7 @@ function checkRot(uuid, data){
 function checkProp(uuid, data){
 	if(
 		!(Array.isArray(data) && data.length==2) ||
-		!(typeof data[0] === "string") ||
-		!(typeof data[1] === "string") 
+		!(typeof data[0] === "string") 
 	) return false
 
 	let prop = data[0]
@@ -151,13 +150,13 @@ io.on('connection', function(conn:any) {
 	console.info(`User '${nickname}' (${uuid}) enter.`)
 
 	// tell everyone on its own that user camed
-	io.to(room).emit("add", [uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room])
+	io.to(room).emit("add", [uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room, JSON.stringify(Users[uuid].props)])
 
 	// tell everyone on other side that user camed
 	io.of('/').adapter.customRequest(
 		[
 			'add',
-			[uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room]
+			[uuid, nickname, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, room, JSON.stringify(Users[uuid].props)]
 		], function(err, replies){
 			replies.forEach(function(reply){
 				if(reply == null) return
@@ -181,7 +180,8 @@ io.on('connection', function(conn:any) {
 				user.rot.x, 
 				user.rot.y, 
 				user.rot.z, 
-				user.room
+				user.room,
+				JSON.stringify(user.props)
 			])
 		}
 	})
@@ -223,11 +223,11 @@ io.on('connection', function(conn:any) {
 	conn.on('change', function(data){
 		let res = checkProp(uuid, data)
 		if(!res) return 
-		console.debug("res change",res)
 
 		let {prop, value} = res
 
 		Users[uuid].props[prop] = value
+		console.debug(Users[uuid].props)
 		io.to(room).emit("change", [uuid, prop, value])
 	})
 
@@ -264,6 +264,7 @@ io.of('/').adapter.customHook =  function(data, cb){
 						Users[uuid].rot.y,
 						Users[uuid].rot.z,
 						Users[uuid].room,
+						JSON.stringify(Users[uuid].props)
 					]
 				})
 				cb(users)

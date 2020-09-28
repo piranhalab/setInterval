@@ -1,5 +1,5 @@
 import { Users } from "./Users.js"
-
+import { Environment } from "./Environment.js"
 //
 //  validation for incoming data as we don't trust websocket incoming messages
 
@@ -7,7 +7,7 @@ export function check(data:any[]):boolean|any{
         if(!data) return false
         if(
                 !(Array.isArray(data)) ||
-                data.length != 9
+                data.length != 10
         ) return false
     
         const uuid = data[0];
@@ -25,6 +25,14 @@ export function check(data:any[]):boolean|any{
         };
 
         const room = data[8]
+
+
+	let props = {};
+	try{
+		props = JSON.parse(data[9])
+	}catch(e){
+		console.debug("error catching")
+	}
 
         if(
                 !(typeof uuid === "string") ||
@@ -51,7 +59,8 @@ export function check(data:any[]):boolean|any{
                 nickname: nickname,
                 room: room,
                 pos: pos,
-                rot: rot
+                rot: rot,
+		props: props
         }
 }
 
@@ -123,19 +132,20 @@ export function checkRot(data:any[]):boolean|any{
 export function checkProp(data:string[]):boolean|any{
         if(
                 !(Array.isArray(data) && data.length==3) ||
-                !(typeof data[0] === "string" && data[0].length == 13) ||
-                !(typeof data[1] === "string")
+                !(typeof data[0] === "string" && data[0].length == 13) 
         ) return false
 
         let uuid = data[0]
         let prop = data[1]
         let value = data[2]
-
-	
-	if(!Users.hasOwnProperty(uuid)) return false
-        if(uuid == Users.me.uuid) return false
-        if(!Users[uuid].props.hasOwnProperty(prop)) return false
-        if(value == Users[uuid].props[prop]) return false
+/*
+	if(!Environment.api) {
+		if(!Users.hasOwnProperty(uuid)) return false
+		if(uuid == Users.me.uuid) return false
+		if(!Users[uuid].props.hasOwnProperty(prop)) return false
+		if(value == Users[uuid].props[prop]) return false
+	}
+	*/
         return {
                 uuid: uuid,
                 prop: prop,
@@ -144,13 +154,22 @@ export function checkProp(data:string[]):boolean|any{
 }
 
 
-export function checkChat(data:string[]):boolean|any{
+export function checkChatdata(data:string[]):boolean|any{
         if(
-                !(Array.isArray(data) && data.length==2) ||
-                !(typeof data[0] === "string" && data[0].length == 13) ||
-                !(typeof data[1] === "string")
+                !(Array.isArray(data) && data.length == 2  && data[1].length<200) 
         ) return false
+	let uuid = data[0]
+	let msg = data[1]
 
+	if(!Users.hasOwnProperty(uuid)) return false
+	if(uuid == Users.me.uuid) return false
+	return {uuid:uuid, msg:msg }
+}
+export function checkChat(data:string):boolean|any{
+        if(
+                !(typeof data === "string" && data.length > 0 && data.length<200) 
+        ) return false
+	/*
         let uuid = data[0]
         let msg = data[1]
 
@@ -160,5 +179,7 @@ export function checkChat(data:string[]):boolean|any{
                 uuid: uuid,
                 msg: msg
         }
+      */
+    return true 
 }
 

@@ -5,7 +5,7 @@ export function check(data) {
     if (!data)
         return false;
     if (!(Array.isArray(data)) ||
-        data.length != 9)
+        data.length != 10)
         return false;
     const uuid = data[0];
     const nickname = data[1];
@@ -20,6 +20,13 @@ export function check(data) {
         z: data[7],
     };
     const room = data[8];
+    let props = {};
+    try {
+        props = JSON.parse(data[9]);
+    }
+    catch (e) {
+        console.debug("error catching");
+    }
     if (!(typeof uuid === "string") ||
         !(typeof nickname === "string" && nickname.length > 0 && nickname.length < 30) ||
         !(typeof room === "string") ||
@@ -38,7 +45,8 @@ export function check(data) {
         nickname: nickname,
         room: room,
         pos: pos,
-        rot: rot
+        rot: rot,
+        props: props
     };
 }
 export function checkName(data) {
@@ -106,39 +114,49 @@ export function checkRot(data) {
 }
 export function checkProp(data) {
     if (!(Array.isArray(data) && data.length == 3) ||
-        !(typeof data[0] === "string" && data[0].length == 13) ||
-        !(typeof data[1] === "string"))
+        !(typeof data[0] === "string" && data[0].length == 13))
         return false;
     let uuid = data[0];
     let prop = data[1];
     let value = data[2];
-    if (!Users.hasOwnProperty(uuid))
-        return false;
-    if (uuid == Users.me.uuid)
-        return false;
-    if (!Users[uuid].props.hasOwnProperty(prop))
-        return false;
-    if (value == Users[uuid].props[prop])
-        return false;
+    /*
+        if(!Environment.api) {
+            if(!Users.hasOwnProperty(uuid)) return false
+            if(uuid == Users.me.uuid) return false
+            if(!Users[uuid].props.hasOwnProperty(prop)) return false
+            if(value == Users[uuid].props[prop]) return false
+        }
+        */
     return {
         uuid: uuid,
         prop: prop,
         value: value
     };
 }
-export function checkChat(data) {
-    if (!(Array.isArray(data) && data.length == 2) ||
-        !(typeof data[0] === "string" && data[0].length == 13) ||
-        !(typeof data[1] === "string"))
+export function checkChatdata(data) {
+    if (!(Array.isArray(data) && data.length == 2 && data[1].length < 200))
         return false;
     let uuid = data[0];
     let msg = data[1];
+    if (!Users.hasOwnProperty(uuid))
+        return false;
     if (uuid == Users.me.uuid)
         return false;
-    if (msg.length > 200)
+    return { uuid: uuid, msg: msg };
+}
+export function checkChat(data) {
+    if (!(typeof data === "string" && data.length > 0 && data.length < 200))
         return false;
-    return {
-        uuid: uuid,
-        msg: msg
-    };
+    /*
+        let uuid = data[0]
+        let msg = data[1]
+
+        if(uuid == Users.me.uuid) return false
+        if(msg.length>200) return false
+        return {
+                uuid: uuid,
+                msg: msg
+        }
+      */
+    return true;
 }

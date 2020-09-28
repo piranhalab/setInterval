@@ -1,5 +1,6 @@
 function checkName(uuid, nickname){
-	if(uuid == Users[uuid].nickname) return false
+	if(nickname.length  == 0) return false
+	if(Users[uuid].nickname  == nickname) return false
 	return true
 }
 
@@ -87,6 +88,8 @@ export interface User {
 	props:{
 		avatar: any
 		pass:number
+		bg:number
+		mesh:number
 	}
 	add: addEvent
 	leave: removeEvent
@@ -106,8 +109,8 @@ declare global {
 
 export class User implements User{
 	constructor(
-		{uuid="", nickname ="", pos={}, rot={}, room} : 
-		{uuid?:string, nickname?: string, pos?:any, rot?:any, room?:string}  ){
+		{uuid="", nickname ="", pos={}, rot={}, room,props={}} : 
+		{uuid?:string, nickname?: string, pos?:any, rot?:any, room?:string,props?:any}  ){
 
 		if(
 			!pos.hasOwnProperty('x') || !(typeof pos.x === 'number') ||
@@ -138,9 +141,15 @@ export class User implements User{
 		this.pos = pos
 		this.rot = rot
 		this.room = room
-		this.props = {
-			avatar: 0,
-			pass:0
+		if(Object.keys(props).length>0){
+			this.props = props
+		}else{
+			this.props = {
+				avatar: 0,
+				pass:0,
+				bg:0,
+				mesh:0
+			}
 		}
 		this.add = new CustomEvent('addUser', {
 			detail: { uuid: uuid } 
@@ -191,6 +200,7 @@ export class User implements User{
 export const Users:Users = new Proxy({},{
 	get: function(target:any, uuid:string){
 		if(uuid == "me" && !target.hasOwnProperty("me")) return new User({})
+		if(uuid == "users") return target
 		return target[uuid]
 	},
 	set: function(target:any, uuid:string, user:User):boolean{
@@ -264,6 +274,8 @@ export const Users:Users = new Proxy({},{
 					if(prop == 'uuid' || prop == 'room') return false
 
 					if(prop == 'nickname' && target.nickname!= value){
+						if(!checkName(uuid, value)) return true
+
 						target.rename.detail.oldName = target.nickname
 						target.nickname = value
 						dispatchEvent(target.rename)
@@ -324,18 +336,38 @@ export const Users:Users = new Proxy({},{
 	}
 })
 
+document.querySelector("#nickname_form input").addEventListener("keydown",function(event:KeyboardEvent){
+	if(event.key=="Enter"){
+		event.preventDefault()
+		Users["me"].nickname = (event.target as HTMLInputElement).value
+
+		//dispatchEvent(Users["me"].rename)
+	}
+}, false)
+
+document.querySelector("#nickname_form a").addEventListener("click",function(event:KeyboardEvent){
+	console.debug("holis")
+	Users["me"].nickname = (document.querySelector("#nickname_form input") as HTMLInputElement).value
+	//event.preventDefault()
+
+})
+
 window.Users = Users
 
 window.addEventListener("addUser", function(event:CustomEvent){
-	const uuid = event.detail.uuid
+	const uuid = event.detail.uuid	
 	console.info(`User '${Users[uuid].nickname}' (${uuid}) enter.`)
+	document.querySelector("#online_number").textContent = Object.keys(Users.users).length.toString()
+	if(uuid == "me"){
+		document.querySelector("#nickname").textContent = Users["me"].nickname
+	}
 })
-
 
 window.addEventListener("removeUser", function(event:CustomEvent){
 	const uuid = event.detail.uuid
 	const nickname = event.detail.uuid
 	console.info(`User '${Users[uuid].nickname}' (${uuid}) left.`)
+	document.querySelector("#online_number").textContent = (Object.keys(Users.users).length -1).toString()
 })
 
 window.addEventListener("renameUser", function(event:CustomEvent){
