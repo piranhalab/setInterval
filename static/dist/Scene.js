@@ -2,7 +2,6 @@ import * as THREE from "./three/build/three.module.js";
 import { Controls } from "./Controls.js";
 import { Avatar } from "./Scene/Avatar.js";
 import { addFloor } from "./Scene/Floor.js";
-import { addCube } from "./Scene/Cube.js";
 import { addScreens } from "./Scene/Screens.js";
 export const Scene = {
     scene: new THREE.Scene(),
@@ -14,7 +13,6 @@ export const Scene = {
         this.controls = Controls.init(this);
         this.avatar = Avatar.init(this);
         this.Floor = addFloor(this);
-        this.Cube = addCube(this);
         this.Screens = addScreens(this);
         this.animate();
     },

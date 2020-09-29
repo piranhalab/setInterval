@@ -1,7 +1,9 @@
 import * as THREE from "../../three/build/three.module.js";
 
-export const addOwl = function (Scene) {
+export const owl =  {
 
+    init: function(Scene){
+	
     let vertices = [];
     let normals = [];
     let segments = 8;
@@ -29,11 +31,11 @@ export const addOwl = function (Scene) {
     geometry.computeVertexNormals();
 
         let mat = new THREE.MeshStandardMaterial( {
-	 metalness: 0.8,
-	 roughness: 0.5,
-	 side: THREE.DoubleSide, 
-    });
-    
+	    metalness: 0.8,
+	    roughness: 0.5,
+	    side: THREE.DoubleSide, 
+	});
+	
     let Mesh = new THREE.Mesh(geometry, mat);
     window.Mesh = Mesh; 
 
@@ -44,10 +46,26 @@ export const addOwl = function (Scene) {
     Mesh.position.y = 10; 
     Scene.scene.add( Mesh );
 
-    move(Mesh);
+	this.mesh = Mesh; 
+    this.movimiento = move(Mesh);
     return Mesh;
 
+    },
+
+    destroy: function(Scene){
+	console.log(this.movimiento, this.mesh)
+	clearInterval(this.movimiento)
+	this.mesh.geometry.dispose()
+	this.mesh.material.dispose()
+	Scene.scene.remove(this.mesh);
+	Scene.renderer.renderLists.dispose();
+	
+    },
+
+    movimiento: null
 }
+
+
 
 function move(mesh){
 
@@ -98,7 +116,7 @@ function move(mesh){
 	}	
     }
 
-    setInterval(loop, 30) 
+    return setInterval(loop, 30)
     
 }
 

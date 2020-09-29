@@ -1,7 +1,9 @@
 import * as THREE from "../../three/build/three.module.js";
 
-export const addTriaxial = function (Scene) {
+export const triaxial =  {
 
+    init: function(Scene){
+    
     let vertices = [];
     let normals = [];
     let segments = 8;
@@ -44,8 +46,22 @@ export const addTriaxial = function (Scene) {
     Mesh.position.y = 10; 
     Scene.scene.add( Mesh );
 
-    move(Mesh);
-    return Mesh;
+	this.mesh = Mesh;
+	this.movimiento = move(Mesh); 
+	return Mesh;
+    },
+
+    
+    destroy: function(Scene){
+	console.log(this.movimiento, this.mesh)
+	clearInterval(this.movimiento)
+	this.mesh.geometry.dispose()
+	this.mesh.material.dispose()
+	Scene.scene.remove(this.mesh);
+	Scene.renderer.renderLists.dispose();
+    },
+
+    movimiento: null
 
 }
 
@@ -100,7 +116,7 @@ function move(mesh){
 	}	
     }
 
-    setInterval(loop, 30) 
+    return setInterval(loop, 30) 
     
 }
 
