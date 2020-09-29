@@ -9,9 +9,8 @@ export const addScreens = function(Scene):THREE.Mesh{
 	Scene.scene.add(Screen)
 
 	window.addEventListener("startStream",function(event:CustomEvent){
-		let id = event.detail.id
-		
-		let vid = document.querySelector(`#${id}`).querySelector("video")
+		let id = event.detail.id		
+		let vid = document.querySelector(`#${id}`)
 		let map = new THREE.VideoTexture( vid );
 		Screen.material.map = map
 		Screen.material.needsUpdate = true

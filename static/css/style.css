@@ -19,3 +19,11 @@ body{
 .chat-body{
 	opacity:0.8;
 }
+#streaming-video{
+	display: block;
+}
+
+#myModal img{
+	background:transparent;
+}
+
