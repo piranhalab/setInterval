@@ -4,19 +4,9 @@ import {Environment} from "./Environment.js"
 import {Users} from "./Users.js"
 
 export interface Controls{
-	rotInterval?: number;
-	controls?: PointerLockControls|any;
+	controls?: OrbitControls|any;
 	init:Function;
-	addMobile: Function;
-	addDesk: Function;
-
-	direction?: THREE.Vector3
-	move?: FrameRequestCallback
-	moveForward?: boolean
-	moveBackward?: boolean
-	moveRight?: boolean
-	moveLeft?: boolean
-	vel?:number
+	orbit?: FrameRequestCallback
 }
 
 export const Controls: Controls = {
@@ -51,6 +41,7 @@ export const Controls: Controls = {
 	       */
 		return this
 	},
+	/*
 	addDesk: function(Scene){
 		this.controls = new PointerLockControls(Scene.camera, document.body)
 		this.rotInterval = null
@@ -129,65 +120,8 @@ export const Controls: Controls = {
 			(e as HTMLElement).addEventListener("click",lockfunc,false)
 		})
 
-
-		window.addEventListener("addUser", function(event:CustomEvent){
-			let uuid = event.detail.uuid
-			if(uuid == "me") requestAnimationFrame(Controls.move)
-		})
-		
-		window.addEventListener("moveUser", function(event:CustomEvent){
-			let uuid = event.detail.uuid
-			let pos = event.detail.pos
-			if(uuid == "me") Scene.camera.position.set(pos.x,pos.y,pos.z)
-		})
-
-		window.addEventListener("keydown", function(event){
-			if(Controls.controls.isLocked == false) return
-			if(document.activeElement != document.body) return
-			switch(event.key){
-				case "w":
-				case "W":
-					Controls.moveForward = true
-					break
-				case "s":
-				case "S":
-					Controls.moveBackward = true
-					break
-				case "a":
-				case "A":
-					Controls.moveLeft = true
-					break
-				case "d":
-				case "D":
-					Controls.moveRight = true
-					break
-			}
-		})
-		
-		window.addEventListener("keyup", function(event){
-			switch(event.key){
-				case "w":
-				case "W":
-					Controls.moveForward = false
-					break
-				case "s":
-				case "S":
-					Controls.moveBackward = false
-					break
-				case "a":
-				case "A":
-					Controls.moveLeft = false
-					break
-				case "d":
-				case "D":
-					Controls.moveRight = false
-					break
-			}
-		})
-
 	},
-	addMobile: function(Scene){
-	}
+       */
 }
 
 

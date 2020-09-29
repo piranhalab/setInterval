@@ -7,7 +7,7 @@ export const addScreens = function (Scene) {
     Scene.scene.add(Screen);
     window.addEventListener("startStream", function (event) {
         let id = event.detail.id;
-        let vid = document.querySelector(`#${id}`).querySelector("video");
+        let vid = document.querySelector(`#${id}`);
         let map = new THREE.VideoTexture(vid);
         Screen.material.map = map;
         Screen.material.needsUpdate = true;
