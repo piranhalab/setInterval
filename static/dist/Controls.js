@@ -12,14 +12,20 @@ export const Controls = {
             Controls.controls.update();
             requestAnimationFrame(Controls.orbit);
         };
-        requestAnimationFrame(this.orbit);
-        setInterval(function () {
-            Users.me.pos = {
-                x: Scene.camera.position.x,
-                y: Scene.camera.position.y,
-                z: Scene.camera.position.z,
-            };
-        }, 100);
+	    window.addEventListener("addUser",function(e){
+		    console.info(e.detail.uuid,"AAAAA")
+		    if(e.detail.uuid== "me" || e.detail.uuid== "01800-api-666"){
+
+		    requestAnimationFrame(this.orbit);
+			setInterval(function () {
+			    Users.me.pos = {
+				x: Scene.camera.position.x,
+				y: Scene.camera.position.y,
+				z: Scene.camera.position.z,
+			    };
+			}, 100);
+		    }
+	    })
         /*
                 if(detectMob()) {
                     this.addMobile(Scene)
