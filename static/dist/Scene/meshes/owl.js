@@ -30,9 +30,9 @@ export const owl =  {
     geometry.computeBoundingSphere();
     geometry.computeVertexNormals();
 
-        let mat = new THREE.MeshStandardMaterial( {
-	    metalness: 0.8,
-	    roughness: 0.5,
+        let mat = new THREE.MeshBasicMaterial( {
+	    //metalness: 0.8,
+	    //roughness: 0.5,
 	    side: THREE.DoubleSide, 
 	});
 	
@@ -43,6 +43,14 @@ export const owl =  {
     Mesh.geometry.normalsNeedUpdate = true;
     Mesh.material.needsUpdate = true; 
 
+	        let vid = document.querySelector("#streaming-video");
+        let map = new THREE.VideoTexture(vid);
+        Mesh.material.map = map;
+        Mesh.material.needsUpdate = true;
+	console.log(vid);
+	//});
+
+	
     Mesh.position.y = 10; 
     Scene.scene.add( Mesh );
 

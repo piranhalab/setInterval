@@ -12,8 +12,8 @@ export const Scene = {
         document.querySelector("#scene").appendChild(this.renderer.domElement);
         this.controls = Controls.init(this);
         this.avatar = Avatar.init(this);
-        this.Floor = addFloor(this);
-        this.Screens = addScreens(this);
+//        this.Floor = addFloor(this);
+//        this.Screens = addScreens(this);
         this.animate();
     },
     animate: function () {
