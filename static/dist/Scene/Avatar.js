@@ -6,12 +6,23 @@ export const Avatar = {
         this.addTextures();
         let group = new THREE.Group();
         let avatar = new THREE.Group();
+
         let avbodyMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             //metalness: 0.9,
             ////roughness: 0.8,
             map: this.textures[0],
+	    transparent: true,
+	    opacity: 0.75
         });
+
+	/*
+	const avbodyMaterial = new THREE.MeshBasicMaterial({ 
+	    envMap: Scene.scene.background,
+	    refractionRatio: 0.95
+	});
+	*/ 
+	
         let avbodyGeometry = new THREE.CylinderGeometry(1.5, 0.5, 6, 32);
         let avbodyMesh = new THREE.Mesh(avbodyGeometry, avbodyMaterial);
         avbodyMesh.position.y = 4;

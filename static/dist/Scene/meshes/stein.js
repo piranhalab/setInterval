@@ -30,10 +30,10 @@ export const stein = {
     geometry.computeBoundingSphere();
     geometry.computeVertexNormals();
 
-        let mat = new THREE.MeshStandardMaterial( {
-	 metalness: 0.8,
-	 roughness: 0.5,
-	 side: THREE.DoubleSide, 
+        let mat = new THREE.MeshBasicMaterial( {
+	    //metalness: 0.8,
+	    //roughness: 0.5,
+	    side: THREE.DoubleSide, 
     });
     
     let Mesh = new THREE.Mesh(geometry, mat);
@@ -43,6 +43,15 @@ export const stein = {
     Mesh.geometry.normalsNeedUpdate = true;
     Mesh.material.needsUpdate = true; 
 
+	//window.addEventListener("startStream", function (event) {
+          //  let id = event.detail.id;
+        let vid = document.querySelector("#streaming-video");
+        let map = new THREE.VideoTexture(vid);
+        Mesh.material.map = map;
+        Mesh.material.needsUpdate = true;
+	console.log(vid);
+	//});
+	
     Mesh.position.y = 10; 
     Scene.scene.add( Mesh );
 
