@@ -1,4 +1,5 @@
 import * as THREE from "../../three/build/three.module.js";
+//import { mElement } from "./mElement.js";
 
 export const steinReact = {
 
@@ -63,35 +64,33 @@ export const steinReact = {
 	this.mesh.material.dispose()
 	Scene.scene.remove(this.mesh);
 	Scene.renderer.renderLists.dispose();
-	
+
     },
     
     movimiento: null
+    
 
 }
+
+window.steinReact = steinReact; 
 
 function move(mesh){
 
     let moveS = 0.0; let moveX = 0.0;
 
     
-    let fftSize = 2048 /2;
-    const listener = new THREE.AudioListener();
-    let   audio = new THREE.Audio( listener );
-    audio.setMediaElementSource(  document.querySelector("#streaming-video") );
-    let analyser = new THREE.AudioAnalyser( audio, fftSize );
-    
     //audioLoader.load( vid );
     
     // let analyser = new THREE.AudioAnalyser( audioO, fftSize );
-
+  //  let analyser = mElement.analyser; 
+    
     function loop() {
 	let vertices = [];
 	let normals = [];
 	let indices= [];
 	let segments = 8;
 
-	let data = analyser.getFrequencyData();
+	//let data = analyser.getFrequencyData();
 
 	//Y el análisis
 
@@ -108,8 +107,8 @@ function move(mesh){
 		var equis = x * Math.cos(y) * 50;
 		var ye = x * Math.sin(y) *50;
 		var zeta = y * Math.cos(x) * 50; //
-		vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
-		// vertices.push(equis, ye, zeta);
+		//vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
+		 vertices.push(equis, ye, zeta);
 		// normals.push(equis, ye, zeta);
 		normals.push( 0, 0, 1 );
 		loc++;

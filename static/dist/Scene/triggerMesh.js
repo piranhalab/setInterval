@@ -10,6 +10,7 @@ import { triaxialAnim } from "../Scene/meshes/triaxialAnim.js";
 import { triaxialReact } from "../Scene/meshes/triaxialReact.js";
 import { capt } from "../Scene/meshes/capt.js";
 import { exporter } from "../Scene/meshes/exporter.js";
+//import { mElement } from "../Scene/meshes/mElement.js"; 
 import { Scene } from "../Scene.js";
 
 export const triggerMesh = {

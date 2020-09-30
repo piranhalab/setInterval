@@ -1,3 +1,5 @@
+//import { mElement } from "./Scene/meshes/mElement.js"; 
+
 export const Streaming = {
     init: function () {
         document.querySelector("#info").click();
@@ -12,6 +14,8 @@ export const Streaming = {
                 flvPlayer.attachMediaElement(document.querySelector('#streaming-video'));
                 flvPlayer.load();
                 flvPlayer.play();
+//		mElement.init(); 
+
 		    
                 flvPlayer.on('error', function (err) {
                     if (err === "NetworkError") {
