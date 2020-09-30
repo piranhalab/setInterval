@@ -7,10 +7,12 @@ export const Streaming = {
                     type: "flv",
                     isLive: true,
                     url: 'https://edges.piranhalab.cc/live'
-                });
+                }); 
+		
                 flvPlayer.attachMediaElement(document.querySelector('#streaming-video'));
                 flvPlayer.load();
                 flvPlayer.play();
+		    
                 flvPlayer.on('error', function (err) {
                     if (err === "NetworkError") {
                         flvPlayer.unload();
