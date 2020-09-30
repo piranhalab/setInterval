@@ -4,7 +4,9 @@ import { Avatar } from "./Scene/Avatar.js";
 import { addFloor } from "./Scene/Floor.js";
 import { addCube } from "./Scene/Cube.js";
 import { addScreens } from "./Scene/Screens.js";
-
+import { addSpheres } from "./Scene/Spheres.js"; 
+import { addLights } from "./Scene/Lights.js";
+		     
 export const Scene = {
     scene: new THREE.Scene(),
     camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
@@ -14,6 +16,8 @@ export const Scene = {
         document.querySelector("#scene").appendChild(this.renderer.domElement);
         this.avatar = Avatar.init(this);
         this.controls = Controls.init(this);
+	this.spheres = addSpheres.init(this);
+	this.lights = addLights.init(this); 
         //this.Floor = addFloor(this);
         // this.Cube = addCube(this);
         // this.Screens = addScreens(this);
