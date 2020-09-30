@@ -1,6 +1,6 @@
 import * as THREE from "../../three/build/three.module.js";
 
-export const owl =  {
+export const owlAnim =  {
 
     init: function(Scene){
 	
@@ -98,7 +98,7 @@ function move(mesh){
 	var loc = 0;
 
 	for(var x = -6; x <= 6; x = x + 0.05){
-	    for(var y = -3; y <= 3; y = y + 0.5){
+	    for(var y = -moveS; y <= moveS; y = y + 0.5){
 
 		var equis = (y * Math.cos(x) * Math.pow(y, 2) * Math.cos(2 * x)) * 10;
 		var ye = (-y * Math.sin(x) * Math.pow(y, 2) * Math.sin (2 * x)) * 10;
@@ -117,11 +117,11 @@ function move(mesh){
 	mesh.geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( normals, 2 ) );
 	
 	mesh.geometry.computeVertexNormals(); // computed vertex normals are orthogonal to th	
-	//moveS+=0.001;
+	moveS+=0.001;
 
-	//if(moveS >= 18){
-	//    moveS = 0; 
-	//}	
+	if(moveS >= 18){
+	    moveS = 0; 
+	}	
     }
 
     return setInterval(loop, 30)

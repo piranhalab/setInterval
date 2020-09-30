@@ -1,6 +1,6 @@
 import * as THREE from "../../three/build/three.module.js";
 
-export const triaxial =  {
+export const triaxialAnim =  {
 
     init: function(Scene){
     
@@ -98,7 +98,7 @@ function move(mesh){
 	// TriaxialTritorus
 
 
-	for(var x = -8; x <= 8; x = x + 0.075){
+	for(var x = -moveS; x <= moveS; x = x + 0.075){
 	    for(var y = -3; y <= 3; y = y + 0.5){
 
 		var equis = Math.sin(x) * (1+Math.cos(y)) * 50;

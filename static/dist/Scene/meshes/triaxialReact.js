@@ -1,6 +1,6 @@
 import * as THREE from "../../three/build/three.module.js";
 
-export const triaxial =  {
+export const triaxialReact =  {
 
     init: function(Scene){
     
@@ -78,13 +78,19 @@ function move(mesh){
     let moveS = 0.0; 
     let moveX = 0.0;
 
-    // Hace falta el audio reactivo
+    let fftSize = 2048 /2;
+    const listener = new THREE.AudioListener();
+    const audio = new THREE.Audio( listener );
+    audio.setMediaElementSource( document.querySelector("#streaming-video") );
+    let analyser = new THREE.AudioAnalyser( audio, fftSize );
 
     function loop() {
 	let vertices = [];
 	let normals = [];
 	let indices = [];
 	let segments = 8;
+
+	let data = analyser.getFrequencyData();
 
 	//Y el análisis 
 
@@ -104,8 +110,8 @@ function move(mesh){
 		var equis = Math.sin(x) * (1+Math.cos(y)) * 50;
 		var ye = Math.sin(x + (Math.PI*2) /3) * (1 + Math.cos(y+(Math.PI *2)/3)) * 75;
 		var zeta = Math.sin(x+2*(Math.PI * 2)/3) * (1 + Math.cos(y+(2*Math.PI*2) / 3 )) * 75;
- 		// vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
-		vertices.push(equis, ye, zeta);
+ 		vertices.push(equis*(1+data[loc%512]/128), ye*(1+data[loc%512]/128), zeta*(1+data[loc%512]/128));
+		// vertices.push(equis, ye, zeta);
 		// normals.push(equis, ye, zeta);
 		normals.push( 0, 0, 1 );
 		loc++;
