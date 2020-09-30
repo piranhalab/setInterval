@@ -16,7 +16,7 @@ export const Controls = {
 		    console.info(e.detail.uuid,"AAAAA")
 		    if(e.detail.uuid== "me" || e.detail.uuid== "01800-api-666"){
 
-		    requestAnimationFrame(this.orbit);
+		    requestAnimationFrame(Controls.orbit);
 			setInterval(function () {
 			    Users.me.pos = {
 				x: Scene.camera.position.x,

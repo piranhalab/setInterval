@@ -98,6 +98,9 @@ export const Avatar = {
             let pos = Users[uuid].pos;
             let rot = Users[uuid].rot;
             let avt = Avatar.avatar.clone();
+            avt.children.forEach(function(ch){
+		    ch.material = ch.material.clone()
+	    })
             Avatar.createLabel(nickname, avt);
             avt.position.set(pos.x, pos.y + Avatar.offsetY, pos.z - 1);
             Scene.scene.add(avt);
@@ -152,6 +155,22 @@ export const Avatar = {
                 k++;
             }, 10);
         });
+
+	    window.addEventListener("changeUser", function(event){
+		    let uuid = event.detail.uuid
+		    let prop = event.detail.prop
+		    let value = event.detail.value
+
+		    if (prop == "avatar"){
+			let avt = Avatar.avatars[uuid];
+			let texture = Avatar.textures[value]
+			    
+			avt.children[0].material.map = texture
+			avt.children[1].material.map = texture
+
+		    }
+	    })
+
         document.querySelectorAll(".avatar-texture").forEach(function (texture_item) {
             texture_item.addEventListener("click", function (event) {
                 let selection = event.target;
@@ -161,13 +180,18 @@ export const Avatar = {
                 if (selection.tagName == "IMG") {
                     selection = selection.parentElement;
                 }
+
                 selection.classList.add("active");
+		    Users.me.avatar = parseInt(selection.getAttribute("texture"));
+		    /*
                 let texture = Avatar.textures[parseInt(selection.getAttribute("texture"))];
                 let avt = Avatar.avatars["me"];
                 avt.children[0].material.map = texture;
+		*/
             });
         });
     },
     offsetY: -14,
     offsetNicknameY: 20,
 };
+window.Avatar = Avatar
