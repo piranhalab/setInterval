@@ -1,0 +1,99 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Open Asset Import Library (assimp v5.0.639693989)"
+    },
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 144422,
+            "type": "VEC3",
+            "max": [
+                0.926478922367096,
+                1.287652850151062,
+                -0.3916250169277191
+            ],
+            "min": [
+                -0.829919695854187,
+                -0.8158249855041504,
+                -1.9171251058578492
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 144422,
+            "type": "VEC4",
+            "max": [
+                0.9450980424880981,
+                0.9450980424880981,
+                0.9058823585510254,
+                1.0
+            ],
+            "min": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 4043816,
+            "uri": "gno49wvqs0mx.bin"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 1733064,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1733064,
+            "byteLength": 2310752,
+            "target": 34962
+        }
+    ],
+    "materials": [
+        {
+            "name": "material",
+            "pbrMetallicRoughness": {
+                "metallicFactor": 0.0
+            }
+        }
+    ],
+    "meshes": [
+        {
+            "primitives": [
+                {
+                    "mode": 0,
+                    "material": 0,
+                    "attributes": {
+                        "POSITION": 0,
+                        "COLOR_0": 1
+                    }
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "mesh": 0
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "scene": 0
+}

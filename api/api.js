@@ -6,7 +6,8 @@ var http = require("http");
 var node_osc_1 = require("node-osc");
 var httpserver = http.createServer();
 var io = socketio(httpserver);
-io.adapter(redisAdapter({ host: '127.0.0.1', port: 6379 }));
+//io.adapter(redisAdapter({ host: '127.0.0.1', port: 6379 }));
+io.adapter(redisAdapter({ host: '134.122.28.24', port: 6379 }));
 var oscServer = new node_osc_1.Server(3333, '0.0.0.0', function () {
     console.log('OSC Server is listening');
 });
